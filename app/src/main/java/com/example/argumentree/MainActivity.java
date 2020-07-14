@@ -8,6 +8,10 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.argumentree.fragments.HomeFragment;
+import com.example.argumentree.fragments.NotificationsFragment;
+import com.example.argumentree.fragments.ProfileFragment;
+import com.example.argumentree.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,26 +28,28 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Fragment fragment = null;
+                Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_profile:
                         // TODO: fill switch with Profile Fragment only if signed in. Otherwise go to Log in activity
-//                        fragment = new ProfileFragment();
+                        fragment = new ProfileFragment();
                         break;
                     case R.id.action_home:
                         // TODO: fill switch with Home Fragment
-//                        fragment = new HomeFragment();
+                        fragment = new HomeFragment();
                         break;
                     case R.id.action_compose:
                         // TODO: fill switch with ComposeActivityIntent
-
+                        fragment = new ProfileFragment();
                         break;
                     case R.id.action_notifications:
                         // TODO: fill switch with Notifications Fragment
-//                        fragment = new NotificationsFragment();
+                        fragment = new NotificationsFragment();
+                        break;
                     case R.id.action_search:
                         // TODO: fill switch with Search Fragment
-//                        fragment = new SearchFragment();
+                        fragment = new SearchFragment();
+                        break;
                     default:
                         fragment = null;
                 }
