@@ -14,10 +14,14 @@ import com.example.argumentree.fragments.NotificationsFragment;
 import com.example.argumentree.fragments.MyProfileFragment;
 import com.example.argumentree.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
+
     final FragmentManager fragmentManager = getSupportFragmentManager();
+
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -43,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_profile:
+                        // If not signed in, go to log in page.
+                        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                            Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
+                            startActivity(intent);
+                            return false;
+                        }
                         fragment = new MyProfileFragment();
                         break;
                     case R.id.action_home:
@@ -60,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
-
-
             }
         });
 

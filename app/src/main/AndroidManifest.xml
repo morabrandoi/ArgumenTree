@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".OthersProfileActivity"></activity>
         <activity android:name=".TreeActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".UserAuthActivity" />
         <activity android:name=".ComposeResponseActivity" />
         <activity android:name=".NodeDetailActivity" />
         <activity android:name=".ComposeQuestionActivity" />
