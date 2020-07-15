@@ -7,26 +7,95 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MyProfileFragment">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="43dp"
-        android:text="This is profile frag"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.426" />
-
     <Button
         android:id="@+id/btnLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="91dp"
-        android:layout_marginTop="218dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginTop="16dp"
         android:text="Log Out"
+        app:layout_constraintStart_toEndOf="@+id/llLikeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic" />
+
+    <ImageView
+        android:id="@+id/ivProfilePageProfilePic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvProfilePageUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="userNameHere"
+        app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="userNameHere" />
+
+    <TextView
+        android:id="@+id/tvProfilePageBio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Bio information hereeeee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
+        app:layout_constraintTop_toBottomOf="@+id/tvProfilePageUsername"
+        tools:text="Bio information hereeeee" />
+
+    <LinearLayout
+        android:id="@+id/llLikeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic">
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="Like"
+            android:textOn="Unlike" />
+
+        <TextView
+            android:id="@+id/tvLikeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="3.2k" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvHasContributedTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Has Contributed To:"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llLikeLayout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvContributions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHasContributedTo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
