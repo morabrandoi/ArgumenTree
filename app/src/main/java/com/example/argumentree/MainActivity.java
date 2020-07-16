@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
-        // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_home);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -72,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Set fragment on main activity
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
 
     }
 }
