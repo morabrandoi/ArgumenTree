@@ -207,6 +207,7 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
    | username      | String   | username of user                                |
    | profile_pic   | String   | reference to firestorage address of profile pic |
    | bio           | String   | short text a person can set for their profile   |
+   | auth_user_id  | String   | The ID of the user in Firebase Auth             |
    
 #### Question Post
    | Property    | Type         | Description                                   |
