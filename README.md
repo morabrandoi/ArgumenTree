@@ -4,7 +4,7 @@
 1. [Overview](##Overview)
 2. [Product Spec](##Product-Spec)
 3. [Wireframes](##Wireframes)
-4. [Schema](##Schema)
+4. [Database](##Database)
 
 ## Overview
 ### Description
@@ -17,13 +17,11 @@ Social Media / Forum / Political
 Reddit-Like UI at least for the homepage. Would be able to browse through infinte list of topics with ability to sort bt category.
     - What makes your app more than a glorified website?
         - Will be easy to pick up and put down by loading directly into the listView screen and offer infinite scrolling. There will be the ability to share comments to other apps like facebook. It can also send push notifications and integrate with camera for associated media with posts.
-
 - **Story:**
     - How clear is the value of this app to your audience?
         - Arguing/Debating online can be frustrating since the structure of comments on other websites is too linear to have meaningful conversations. There would also be a strong emphasis on sources as well as easy integration for allowing them.
     - How well would your friends or peers respond to this product idea?
         - They seemed to like the idea since it would at the very least be a big change in pace from the norm of linear conversations online.
-
 - **Market:**
     - What's the size and scale of your potential user base?
         - Possibly the majority of people that use any form of social media since arguing and debating one's opinions is a primary way users engage.
@@ -31,13 +29,11 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
         - I believe it does since those who share their opinions online in apps like Instagram or Tik Tok aren't even able to post clickable links.
     - Do you have a well-defined audience of people for this app?
         - Even a small percentage of people who frequently use comment sections to debate / argue would make a large audience for this application so I believe there is an audience for this kind of app.
-
 - **Habit:**
     - How frequently would an average user open and use this app?
         - I foresee a significant portion of the traffic from this app coming from links in other parts of the internet that link to specific topics someone may be discussing. So about 1/2 as often as people go on other social media apps. A user might open this app 5 times a week if they frequent the internet comment sections.
     - Does an average user just consume your app or do they create?
         - I would think the average user creates 25% of the time and just watches 75% of the time since this app would most likely be used to settle debates or make points in a conversation happening elsewhere.
-
 - **Scope:**
     - How technically challenging will it be to complete this app by the end of the program?
         - The biggest technical challenge would be to display the tree structure of the argument. Other than that, it would be a lot of moving between screens with intents.
@@ -45,19 +41,13 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
         - Yes I believe it would be. The core functionality is quite simple and reddit-like (with the twist of a tree structure for conversation) and a large emphasis on sources.
     - How clearly defined is the product you want to build?
         - Well defined.
-
-
 ## Product Spec
-
 ### 1. User Stories (Required "R" and Optional "O")
 #### **Visible Layout** ####
-
 ##### Home Timeline Tab #####
 * R: Has navbar on the bottom
-    * R: Has Profile tab
+    * R: Has Profile, home_time line and search tabs
         * R: Clicking on profile tab leads to log in page when not logged in
-    * R: Has Home Timeline Tab
-    * R: Has Search tab
 * R: Has recyclerView list of globally popular nodes (questions or responses)
     * R: Each item in list has an interaction count (weighted sum of upvotes, downvotes, and comments)
     * O: Each item has an icon to launch into Graph view 
@@ -145,27 +135,21 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
 **Flow Navigation** (Screen to Screen)
 
 * Home Timeline
-   * Login Page
-       * If clicked on MyProfile tab and not logged in
-   * MyProfile Page
-       * If clicked on MyProfile tab and am logged in
-   * Compose Question
-       * If clicked on + sign in middle of navbar
-   * Item Detail View
-       * If clicked on body of item
-   * Search
-       * If clicked on Search tab
+   * All navbar options
+        * If clicked
    * Tree View
        * If clicked on tree icon of item
 * Log-In Page
    * Home Timeline
        * on log in or on cancel
-* Profile Page
+* My Profile Page
     * Node Detail view
         * If clicked on previous screen
         * Or clicked on one of the items person contributed to
     * All navbar options
         * If clicked
+    * Tree view if click on item's Tree icon
+    * Profile Page
 * Detailed Node/Item View
     * Compose Response
         * If click reply on any item
@@ -208,14 +192,44 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
 
 ### [BONUS] Interactive Prototype
 -->
-## Schema 
-[This section will be completed in Unit 9] 
-### Models
-* User
-* Tree
-* Question Node
-* Response Node
-<!-- ### Networking
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp] -->
+## Database
+
+### Collections
+- users
+- questions
+- responses
+
+### Document Schemas
+#### User
+   | Property      | Type     | Description                                     |
+   | ------------- | -------- | ----------------------------------------------- |
+   | email         | String   | email user signed up with                       |
+   | username      | String   | username of user                                |
+   | profile_pic   | String   | reference to firestorage address of profile pic |
+   | bio           | String   | short text a person can set for their profile   |
+   
+#### Question Post
+   | Property    | Type         | Description                                   |
+   | ------------| ----------   | ----------------------------------------------|
+   | body        | String       | body of the question, should end with a "?"   |
+   | tags        | List\<String>| The categories the person attaches to their Q | 
+   | planted_by  | ref\<User>   | question author                               |
+   | media       | Reference    | refrence to firestoreage location for image   |
+   | descendants | Number       | total number of nodes below it in the tree    |
+   
+
+#### Response Post
+   | Property       | Type           | Description                                |
+   | -------------  | -------------- | ------------------------------------------ |
+   | parent         | ref\<response> | Response above.                            |
+   | question root  | ref\<question> | the Head question this is answering        |
+   | descendants    | Number         | total number of nodes below it in the tree |
+   | agreements     | Number         | number of up Votes for the post            |
+   | disagreements  | Number         | number of down Votes                       |
+   | title          | String         | short text summarizing claim               |
+   | claim          | String         | longer piece of text stating the claim     |
+   | source         | String         | reference to source document               |
+   | source_valid_q | ref\<question> | reference to automated question post asking if source is valid |
+   
+   
+   
