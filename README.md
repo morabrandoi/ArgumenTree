@@ -214,7 +214,7 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
    | body        | String       | body of the question, should end with a "?"   |
    | tags        | List\<String>| The categories the person attaches to their Q | 
    | planted_by  | ref\<User>   | question author                               |
-   | media       | Reference    | refrence to firestoreage location for image   |
+   | media       | Reference    | reference to firestorage location for image   |
    | descendants | Number       | total number of nodes below it in the tree    |
    
 
