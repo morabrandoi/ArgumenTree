@@ -1,44 +1,30 @@
 package com.example.argumentree.models;
 
-import com.example.argumentree.Constants;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.type.Date;
+import com.google.firebase.firestore.ServerTimestamp;
+import java.util.Date;
 
 public class User {
-    public static User UserFromDocument(QueryDocumentSnapshot doc){
-        User user = new User();
-        String email = doc.get(Constants.KEY_USER_EMAIL).toString();
-        String username = doc.get(Constants.KEY_USER_USERNAME).toString();
-        String bio = doc.get(Constants.KEY_USER_BIO).toString();
-        String authUserID = doc.get(Constants.KEY_USER_AUTH_USER_ID).toString();
-        Date createdAt = (Date) doc.get(Constants.KEY_USER_CREATED_AT);
-        Object profilePic = doc.get(Constants.KEY_USER_PROFILE_PIC);
-        Object likes = doc.get(Constants.KEY_USER_LIKES);
-
-        user.setEmail(email);
-        user.setUsername(username);
-        user.setBio(bio);
-        user.setAuthUserID(authUserID);
-        user.setCreatedAt(createdAt);
-        user.setLikes((Integer) likes);
-
-        if (profilePic != null){
-            user.setProfilePic(profilePic.toString());
-        }
-
-        return user;
-    }
 
     private String email;
     private String username;
     private String profilePic;
     private String bio;
     private String authUserID;
-    private Date createdAt;
+    private @ServerTimestamp Date createdAt;
     private int likes;
 
     public User() {
 
+    }
+
+    public User(String email, String username, String profilePic, String bio, String authUserID, Date createdAt, int likes) {
+        this.email = email;
+        this.username = username;
+        this.profilePic = profilePic;
+        this.bio = bio;
+        this.authUserID = authUserID;
+        this.createdAt = createdAt;
+        this.likes = likes;
     }
 
     public String getEmail() {
