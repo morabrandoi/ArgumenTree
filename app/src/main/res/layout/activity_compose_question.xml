@@ -26,8 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:hint="Enter the Body of your question"
-        android:maxLines="5"
-        android:minLines="5"
+        android:maxLines="8"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -65,16 +64,27 @@
             tools:layout_editor_absoluteX="59dp" />
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SampleTag" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp">
 
         </com.google.android.material.chip.ChipGroup>
 
+        <EditText
+            android:id="@+id/etAddChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Add"
+            android:selectAllOnFocus="true"
+            android:singleLine="true" />
+
+        <ImageView
+            android:id="@+id/ivAddChip"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
     </LinearLayout>
 
     <Switch
