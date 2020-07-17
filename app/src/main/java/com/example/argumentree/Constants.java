@@ -4,9 +4,9 @@ public class Constants {
     // For users document
     public static final String KEY_USER_EMAIL = "email";
     public static final String KEY_USER_USERNAME = "username";
-    public static final String KEY_USER_PROFILE_PIC = "profile_pic";
+    public static final String KEY_USER_PROFILE_PIC = "profilePic";
     public static final String KEY_USER_BIO = "bio";
-    public static final String KEY_USER_AUTH_USER_ID = "auth_user_id";
+    public static final String KEY_USER_AUTH_USER_ID = "authUserID";
     public static final String KEY_USER_LIKES = "likes";
     public static final String KEY_USER_CREATED_AT = "createdAt";
 
@@ -27,6 +27,6 @@ public class Constants {
     public static final String KEY_RESPONSE_TITLE = "title";
     public static final String KEY_RESPONSE_CLAIM = "claim";
     public static final String KEY_RESPONSE_SOURCE = "source";
-    public static final String KEY_RESPONSE_SOURCE_QUESTION = "source_question";
+    public static final String KEY_RESPONSE_SOURCE_QUESTION = "sourceQuestion";
     public static final String KEY_RESPONSE_CREATED_AT = "createdAt";
 }
