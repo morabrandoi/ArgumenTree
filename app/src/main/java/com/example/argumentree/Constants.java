@@ -13,7 +13,7 @@ public class Constants {
     // for question post document
     public static final String KEY_QUESTION_BODY = "body";
     public static final String KEY_QUESTION_TAGS = "tags";
-    public static final String KEY_QUESTION_AUTHOR = "author";
+    public static final String KEY_QUESTION_AUTHOR = "authorRef";
     public static final String KEY_QUESTION_MEDIA = "media";
     public static final String KEY_QUESTION_DESCENDANTS = "descendants";
     public static final String KEY_QUESTION_CREATED_AT = "createdAt";
