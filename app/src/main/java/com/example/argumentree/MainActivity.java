@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.argumentree.fragments.HomeFragment;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.action_profile:
                         // If not signed in, go to log in page.
-                        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                        if (FirebaseAuth.getInstance().getUid() == null){
                             Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
                             startActivity(intent);
                             return false;
