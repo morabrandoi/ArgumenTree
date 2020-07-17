@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.argumentree.Constants;
 import com.example.argumentree.R;
 import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.User;
@@ -102,7 +103,7 @@ public class MyProfileFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Query query = db.collection("users").whereEqualTo("auth_user_id", currentUserUID);
+        Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -112,7 +113,8 @@ public class MyProfileFragment extends Fragment {
                         Log.d(TAG, document.getId() + " => " + document.getData());
 
                         // Filling in User info
-                        User user = User.UserFromDocument(document);
+//                        User user = User.UserFromDocument(document);
+                        User user = document.toObject(User.class);
                         tvProfilePageUsername.setText(user.getUsername());
                         tvProfilePageBio.setText(user.getBio());
                     }
