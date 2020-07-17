@@ -208,29 +208,33 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
    | profile_pic   | String   | reference to firestorage address of profile pic |
    | bio           | String   | short text a person can set for their profile   |
    | auth_user_id  | String   | The ID of the user in Firebase Auth             |
+   | likes         | Number   | The number of likes that have been given to a profile|
+   | createdAt     | Timestamp| The time the user was created                   |
    
 #### Question Post
    | Property    | Type         | Description                                   |
    | ------------| ----------   | ----------------------------------------------|
    | body        | String       | body of the question, should end with a "?"   |
    | tags        | List\<String>| The categories the person attaches to their Q | 
-   | planted_by  | ref\<User>   | question author                               |
+   | author      | ref\<User>   | question author                               |
    | media       | Reference    | reference to firestorage location for image   |
    | descendants | Number       | total number of nodes below it in the tree    |
+   | createdAt   | Timestamp    | the time the post was created                 |
    
 
 #### Response Post
    | Property       | Type           | Description                                |
    | -------------  | -------------- | ------------------------------------------ |
    | parent         | ref\<response> | Response above.                            |
-   | question root  | ref\<question> | the Head question this is answering        |
+   | question_root  | ref\<question> | the Head question this is answering        |
    | descendants    | Number         | total number of nodes below it in the tree |
    | agreements     | Number         | number of up Votes for the post            |
    | disagreements  | Number         | number of down Votes                       |
    | title          | String         | short text summarizing claim               |
    | claim          | String         | longer piece of text stating the claim     |
    | source         | String         | reference to source document               |
-   | source_valid_q | ref\<question> | reference to automated question post asking if source is valid |
+   | source_question| ref\<question> | reference to automated question post asking if source is valid |
+   | createdAt      | Timestamp      | time the post was created |
    
    
    
