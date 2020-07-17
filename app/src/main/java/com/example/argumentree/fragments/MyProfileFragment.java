@@ -72,7 +72,7 @@ public class MyProfileFragment extends Fragment {
         rvContributions = view.findViewById(R.id.rvContributions);
 
         // fill view with data
-        fillUserInfoFromFirestore(view);
+        fillUserInfoFromFirestore();
 
         // Setting listeners
 
@@ -98,7 +98,7 @@ public class MyProfileFragment extends Fragment {
         //
     }
 
-    private void fillUserInfoFromFirestore(final View view) {
+    private void fillUserInfoFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -113,8 +113,8 @@ public class MyProfileFragment extends Fragment {
 
                         // Filling in User info
                         User user = User.UserFromDocument(document);
-                        tvProfilePageUsername.setText(user.username);
-                        tvProfilePageBio.setText(user.bio);
+                        tvProfilePageUsername.setText(user.getUsername());
+                        tvProfilePageBio.setText(user.getBio());
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
