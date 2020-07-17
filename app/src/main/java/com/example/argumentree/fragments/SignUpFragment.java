@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.argumentree.R;
+import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,11 +124,15 @@ public class SignUpFragment extends Fragment {
     private void addUserToFirestore(String uid) {
         // creating user object and filling with email, username, and bio (as "Relaxing")
         // TODO: Stretch: Implement that the email and username must be unique
-        Map<String, Object> user = new HashMap<>();
-        user.put("email", etEmail.getText().toString());
-        user.put("username", etUsername.getText().toString());
-        user.put("auth_user_id", uid);
-        user.put("bio", "Change your bio, tap on me!");
+        String email = etEmail.getText().toString();
+        String username = etUsername.getText().toString();
+        String profilePic = null;
+        String bio = "Hanging in there!";
+        String authUserID = uid;
+        Date createdAt = new Date();
+        int likes = 0;
+
+        User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes);
 
         db.collection("users")
                 .add(user)
