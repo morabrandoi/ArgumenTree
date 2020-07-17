@@ -17,10 +17,17 @@ import android.widget.Toast;
 
 import com.example.argumentree.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,8 +41,9 @@ public class SignUpFragment extends Fragment {
     private EditText etUsername;
     private EditText etPassword;
 
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
-    FirebaseAuth auth;
 
     public SignUpFragment() {
         // Required empty public constructor
@@ -59,6 +67,7 @@ public class SignUpFragment extends Fragment {
         etPassword = view.findViewById(R.id.etSignUpPassword);
 
         auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,11 +110,36 @@ public class SignUpFragment extends Fragment {
     private void updateUI(FirebaseUser user) {
         if (user == null){ // Auth failed
             etPassword.setText(null);
-        }
-        else{
 
+        // Auth was successful
+        } else {
+            addUserToFirestore(user.getUid());
             getActivity().finish();
         }
     }
 
+    private void addUserToFirestore(String uid) {
+        // creating user object and filling with email, username, and bio (as "Relaxing")
+        // TODO: Stretch: Implement that the email and username must be unique
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", etEmail.getText().toString());
+        user.put("username", etUsername.getText().toString());
+        user.put("auth_user_id", uid);
+        user.put("bio", "Change your bio, tap on me!");
+
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
+    }
 }
