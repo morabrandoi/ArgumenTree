@@ -14,12 +14,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.argumentree.Constants;
 import com.example.argumentree.R;
+import com.example.argumentree.UserAuthActivity;
+import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,12 +71,14 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = auth.getCurrentUser();
-                            updateUI(user);
+                            getUserFromFirestore();
+                            getActivity().finish();                            // Storing username in shared prefs
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
                     }
                 });
@@ -79,7 +88,31 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void updateUI(FirebaseUser user) {
-        getActivity().finish();
+    private void getUserFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+
+                        // putting User object in shared prefs
+                        User user = document.toObject(User.class);
+                        UserAuthActivity activity = ((UserAuthActivity) getActivity());
+                        SharedPrefHelper.putUserIn(activity, user);
+
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
+
 }

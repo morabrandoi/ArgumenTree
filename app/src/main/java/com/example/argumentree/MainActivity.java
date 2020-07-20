@@ -14,9 +14,16 @@ import com.example.argumentree.fragments.HomeFragment;
 import com.example.argumentree.fragments.NotificationsFragment;
 import com.example.argumentree.fragments.MyProfileFragment;
 import com.example.argumentree.fragments.SearchFragment;
+import com.example.argumentree.fragments.SharedPrefHelper;
+import com.example.argumentree.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -29,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Ensure if user is signed in then user object is in shared prefs
+        ensureUserInSharedPref();
+        // Pulling references View elements
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -43,12 +52,14 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
 
+
                 // Switching tabs as fragments
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_profile:
                         // If not signed in, go to log in page.
-                        if (FirebaseAuth.getInstance().getUid() == null){
+                        Log.e(TAG, "GetUID" + FirebaseAuth.getInstance().getCurrentUser());
+                        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                             Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
                             startActivity(intent);
                             return false;
@@ -75,6 +86,36 @@ public class MainActivity extends AppCompatActivity {
 
         // Set fragment on main activity
         bottomNavigationView.setSelectedItemId(R.id.action_home);
+    }
+
+    private void ensureUserInSharedPref() {
+        boolean hasUser = SharedPrefHelper.hasUserIn(this);
+        if (!hasUser && FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
+
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+
+                            // putting User object in shared prefs
+                            User user = document.toObject(User.class);
+                            SharedPrefHelper.putUserIn(MainActivity.this, user);
+
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
+        }
 
     }
 }

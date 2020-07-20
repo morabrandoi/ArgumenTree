@@ -1,6 +1,8 @@
 package com.example.argumentree.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +89,7 @@ public class MyProfileFragment extends Fragment {
 
 
         // fill view with data
-        fillUserInfoFromFirestore();
+        fillUserInfoFromSharedPrefs();
 
         // Setting listeners
 
@@ -106,35 +109,24 @@ public class MyProfileFragment extends Fragment {
                 getFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
                 BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigation);
                 bottomNavigationView.setSelectedItemId(R.id.action_home);
+
+                // Clear sharedPreferences of logged in user
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(Constants.KEY_SP_CURRENT_USER, null);
+                editor.apply();
             }
         });
 
     }
 
-    private void fillUserInfoFromFirestore() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    // TODO: Remove this call and move it to login and sign up. Replace with pull from shared prefs
 
-        Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
-
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-
-                        // Filling in User info
-//                        User user = User.UserFromDocument(document);
-                        User user = document.toObject(User.class);
-                        tvProfilePageUsername.setText(user.getUsername());
-                        tvProfilePageBio.setText(user.getBio());
-                    }
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
+    private void fillUserInfoFromSharedPrefs(){
+        // Getting User object from shared prefs
+        User user = SharedPrefHelper.getUser(getActivity());
+        tvProfilePageUsername.setText(user.getUsername());
+        tvProfilePageBio.setText(user.getBio());
     }
 
     private void fillContributionsFromFirestore(){

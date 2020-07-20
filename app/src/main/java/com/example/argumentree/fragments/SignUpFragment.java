@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.argumentree.R;
+import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,13 +25,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,8 +120,9 @@ public class SignUpFragment extends Fragment {
     }
 
     private void addUserToFirestore(String uid) {
-        // creating user object and filling with email, username, and bio (as "Relaxing")
+
         // TODO: Stretch: Implement that the email and username must be unique
+        // Assigning fields of the user object
         String email = etEmail.getText().toString();
         String username = etUsername.getText().toString();
         String profilePic = null;
@@ -132,14 +131,21 @@ public class SignUpFragment extends Fragment {
         Date createdAt = new Date();
         int likes = 0;
 
-        User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes);
-
+        // Creating user object from the fields
+        final User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes);
+        // Storing the parent activity
+        final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
+        // Posting user object to firestore and storing user object in shared prefs when successful
         db.collection("users").document(username)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
+
+                        // Storing username in shared prefs
+                        UserAuthActivity activity = ((UserAuthActivity) getActivity());
+                        SharedPrefHelper.putUserIn(activity, user);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -149,4 +155,6 @@ public class SignUpFragment extends Fragment {
                     }
                 });
     }
+
+
 }

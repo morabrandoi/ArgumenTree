@@ -3,7 +3,6 @@ package com.example.argumentree;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,16 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.argumentree.fragments.SharedPrefHelper;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-
-import org.w3c.dom.Text;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +39,11 @@ public class ComposeQuestionActivity extends AppCompatActivity {
 
     // Model member variables
     private List<String> allChips;
+
+    // Database vars
+
+    //
+
 
 
     @Override
@@ -80,36 +85,48 @@ public class ComposeQuestionActivity extends AppCompatActivity {
             }
         });
 
-
+        // Submit Question
         btnSubmitQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String body, List<String> tags, String authorRef, String mediaRef, int descendants, Date createdAt
-                String body = etQuestionBody.getText().toString();
-                // TODO: Implement chip functionality
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                SharedPrefHelper.hasUserIn(ComposeQuestionActivity.this);
+                User user = SharedPrefHelper.getUser(ComposeQuestionActivity.this);
 
+                String body = etQuestionBody.getText().toString();
+                List<String> tags = new ArrayList<String>();
+                    tags.add("Sample1");
+                    tags.add("Sample2");
+                String authorRef = user.getUsername();
+                String mediaRef = null; // TODO: STRETCH: Add media to posts
+                int descendants = 0;
+                boolean relaxed = false; // TODO: pull info from UI toggle switch
                 Date createdAt = new Date();
 
 
-//                db.collection("users").document(username)
-//                        .set(user)
-//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                Log.d(TAG, "DocumentSnapshot successfully written!");
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Log.e(TAG, "Error adding document", e);
-//                            }
-//                        });
+                Question question = new Question(body, tags, authorRef, mediaRef, descendants, relaxed, createdAt);
 
+                db.collection("questions")
+                        .add(question)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.i(TAG, "Successfully posted a question!");
+                                Toast.makeText(ComposeQuestionActivity.this, "Posted!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Error adding document", e);
+                                Toast.makeText(ComposeQuestionActivity.this, "Something went wrong posting question", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 finish();
             }
         });
 
     }
+
 
 }

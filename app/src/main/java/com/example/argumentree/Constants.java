@@ -29,4 +29,7 @@ public class Constants {
     public static final String KEY_RESPONSE_SOURCE = "source";
     public static final String KEY_RESPONSE_SOURCE_QUESTION = "sourceQuestion";
     public static final String KEY_RESPONSE_CREATED_AT = "createdAt";
+
+    // Shared Preferences
+    public static final String KEY_SP_CURRENT_USER = "com.example.argumentree.currentUser";
 }
