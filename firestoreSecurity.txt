@@ -7,5 +7,9 @@ service cloud.firestore {
       allow update: if resource.data.auth_user_id == request.auth.uid;
       allow delete: if resource.data.auth_user_id == request.auth.uid;
     }
+
+    match /questions/{questionID} {
+        allow read, write: if true;
+    }
   }
 }
