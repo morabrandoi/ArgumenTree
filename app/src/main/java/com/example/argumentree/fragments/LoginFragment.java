@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.argumentree.Constants;
+import com.example.argumentree.MainActivity;
 import com.example.argumentree.R;
 import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.User;
@@ -104,8 +105,8 @@ public class LoginFragment extends Fragment {
 
                         // putting User object in shared prefs
                         User user = document.toObject(User.class);
-                        UserAuthActivity activity = ((UserAuthActivity) getActivity());
-                        SharedPrefHelper.putUserIn(activity, user);
+                        Log.e(TAG, "\n\nActivity: " + getActivity() + "\n\n");
+                        SharedPrefHelper.putUserIn(getActivity(), user);
 
                     }
                 } else {

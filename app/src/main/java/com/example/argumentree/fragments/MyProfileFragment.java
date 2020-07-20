@@ -90,6 +90,7 @@ public class MyProfileFragment extends Fragment {
 
         // fill view with data
         fillUserInfoFromSharedPrefs();
+        fillContributionsFromFirestore();
 
         // Setting listeners
 
