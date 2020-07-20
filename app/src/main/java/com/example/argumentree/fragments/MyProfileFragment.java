@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyProfileFragment extends Fragment {
-    public static final String TAG = "ProfileFragment";
+    public static final String TAG = "MyProfileFragment";
 
     private Button btnLogOut;
     private ImageView ivProfilePageProfilePic;
@@ -54,6 +54,7 @@ public class MyProfileFragment extends Fragment {
     private RecyclerView rvContributions;
     private List<Question> ownQuestions;
     private ProfileAdapter profileAdapter;
+    private User user;
 
     public MyProfileFragment() {
         // Required empty public constructor
@@ -89,7 +90,7 @@ public class MyProfileFragment extends Fragment {
 
 
         // fill view with data
-        fillUserInfoFromSharedPrefs();
+        user = fillUserInfoFromSharedPrefs();
         fillContributionsFromFirestore();
 
         // Setting listeners
@@ -123,33 +124,38 @@ public class MyProfileFragment extends Fragment {
 
     // TODO: Remove this call and move it to login and sign up. Replace with pull from shared prefs
 
-    private void fillUserInfoFromSharedPrefs(){
+    private User fillUserInfoFromSharedPrefs(){
         // Getting User object from shared prefs
         User user = SharedPrefHelper.getUser(getActivity());
         tvProfilePageUsername.setText(user.getUsername());
         tvProfilePageBio.setText(user.getBio());
+
+        return user;
     }
 
     private void fillContributionsFromFirestore(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Query query = db.collection("questions").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
+        Query query = db.collection("questions").whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    Log.d(TAG, "success");
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d(TAG, document.getId() + " => " + document.getData());
 
                         Question question = document.toObject(Question.class);
                         ownQuestions.add(question);
+                        profileAdapter.notifyDataSetChanged();
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
+
     }
 }

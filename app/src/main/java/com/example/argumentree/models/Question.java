@@ -14,6 +14,10 @@ public class Question {
     private boolean relaxed;
     private @ServerTimestamp Date createdAt;
 
+    public Question() {
+
+    }
+
     public Question(String body, List<String> tags, String authorRef, String mediaRef, int descendants, boolean relaxed, Date createdAt) {
         this.body = body;
         this.tags = tags;
@@ -79,4 +83,5 @@ public class Question {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
 }
