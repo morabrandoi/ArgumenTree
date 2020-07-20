@@ -96,6 +96,8 @@ public class LoginFragment extends Fragment {
 
         Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
 
+        // Parent activity
+        final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -105,8 +107,7 @@ public class LoginFragment extends Fragment {
 
                         // putting User object in shared prefs
                         User user = document.toObject(User.class);
-                        Log.e(TAG, "\n\nActivity: " + getActivity() + "\n\n");
-                        SharedPrefHelper.putUserIn(getActivity(), user);
+                        SharedPrefHelper.putUserIn(parentActivity, user);
 
                     }
                 } else {

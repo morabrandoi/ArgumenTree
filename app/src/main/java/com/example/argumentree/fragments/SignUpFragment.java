@@ -133,6 +133,8 @@ public class SignUpFragment extends Fragment {
 
         // Creating user object from the fields
         final User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes);
+        // Grabbing reference to current activity
+        final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
 
         // Posting user object to firestore and storing user object in shared prefs when successful
         db.collection("users").document(username)
@@ -143,8 +145,7 @@ public class SignUpFragment extends Fragment {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
 
                         // Storing user in shared prefs
-                        Log.e(TAG, "\n\nActivity: " + getActivity() + "\n\n");
-                        SharedPrefHelper.putUserIn(getActivity(), user);
+                        SharedPrefHelper.putUserIn(parentActivity, user);
 
                     }
                 })
