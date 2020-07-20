@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -19,8 +20,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.argumentree.Constants;
+import com.example.argumentree.ProfileAdapter;
 import com.example.argumentree.R;
 import com.example.argumentree.UserAuthActivity;
+import com.example.argumentree.models.Question;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,12 +35,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
-*/
-public class MyProfileFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MyProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
+
     private Button btnLogOut;
     private ImageView ivProfilePageProfilePic;
     private TextView tvProfilePageUsername;
@@ -46,6 +49,8 @@ public class MyProfileFragment extends Fragment {
     private TextView tvLikeCount;
     private TextView tvHasContributedTo;
     private RecyclerView rvContributions;
+    private List<Question> ownQuestions;
+    private ProfileAdapter profileAdapter;
 
     public MyProfileFragment() {
         // Required empty public constructor
@@ -55,14 +60,15 @@ public class MyProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_my_profile, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Pulling all view elements in
 
+        // Pulling all view elements in
         btnLogOut = view.findViewById(R.id.btnLogOut);
         ivProfilePageProfilePic = view.findViewById(R.id.ivProfilePageProfilePic);
         tvProfilePageUsername = view.findViewById(R.id.tvProfilePageUsername);
@@ -71,6 +77,13 @@ public class MyProfileFragment extends Fragment {
         tvLikeCount = view.findViewById(R.id.tvLikeCount);
         tvHasContributedTo = view.findViewById(R.id.tvHasContributedTo);
         rvContributions = view.findViewById(R.id.rvContributions);
+
+        // Setting up recycler view
+        ownQuestions = new ArrayList<Question>();
+        profileAdapter = new ProfileAdapter(getContext(), ownQuestions);
+        rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvContributions.setAdapter(profileAdapter);
+
 
         // fill view with data
         fillUserInfoFromFirestore();
@@ -96,7 +109,6 @@ public class MyProfileFragment extends Fragment {
             }
         });
 
-        //
     }
 
     private void fillUserInfoFromFirestore() {
@@ -117,6 +129,29 @@ public class MyProfileFragment extends Fragment {
                         User user = document.toObject(User.class);
                         tvProfilePageUsername.setText(user.getUsername());
                         tvProfilePageBio.setText(user.getBio());
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void fillContributionsFromFirestore(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Query query = db.collection("questions").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+
+                        Question question = document.toObject(Question.class);
+                        ownQuestions.add(question);
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
