@@ -11,14 +11,16 @@ public class Question {
     private String authorRef;
     private String mediaRef;
     private int descendants;
+    private boolean relaxed;
     private @ServerTimestamp Date createdAt;
 
-    public Question(String body, List<String> tags, String authorRef, String mediaRef, int descendants, Date createdAt) {
+    public Question(String body, List<String> tags, String authorRef, String mediaRef, int descendants, boolean relaxed, Date createdAt) {
         this.body = body;
         this.tags = tags;
         this.authorRef = authorRef;
         this.mediaRef = mediaRef;
         this.descendants = descendants;
+        this.relaxed = relaxed;
         this.createdAt = createdAt;
     }
 
@@ -60,6 +62,14 @@ public class Question {
 
     public void setDescendants(int descendants) {
         this.descendants = descendants;
+    }
+
+    public boolean isRelaxed() {
+        return relaxed;
+    }
+
+    public void setRelaxed(boolean relaxed) {
+        this.relaxed = relaxed;
     }
 
     public Date getCreatedAt() {
