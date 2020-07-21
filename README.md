@@ -225,15 +225,15 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
 #### Response Post
    | Property       | Type           | Description                                |
    | -------------  | -------------- | ------------------------------------------ |
-   | parent         | ref\<response> | Response above.                            |
-   | question_root  | ref\<question> | the Head question this is answering        |
+   | parentRef      | ref\<response> | Response above.                            |
+   | questionRef    | ref\<question> | the Head question this is answering        |
    | descendants    | Number         | total number of nodes below it in the tree |
    | agreements     | Number         | number of up Votes for the post            |
    | disagreements  | Number         | number of down Votes                       |
-   | title          | String         | short text summarizing claim               |
+   | brief          | String         | short text summarizing claim               |
    | claim          | String         | longer piece of text stating the claim     |
    | source         | String         | reference to source document               |
-   | source_question| ref\<question> | reference to automated question post asking if source is valid |
+   | sourceQRef     | ref\<question> | reference to automated question post asking if source is valid |
    | createdAt      | Timestamp      | time the post was created |
    
    

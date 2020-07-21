@@ -11,5 +11,10 @@ service cloud.firestore {
     match /questions/{questionID} {
         allow read, write: if true;
     }
+
+    match /responses/{responseID} {
+        allow read, write: if true;
+    }
   }
 }
+
