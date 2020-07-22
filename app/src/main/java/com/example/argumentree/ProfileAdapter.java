@@ -3,6 +3,7 @@ package com.example.argumentree;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
+import com.example.argumentree.models.Response;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.parceler.Parcels;
 
@@ -21,11 +30,11 @@ import java.util.List;
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder> {
     private static final String TAG = "ProfileAdapter";
     private Context context;
-    private List<Question> ownQuestions;
+    private List<Post> ownPosts;
 
-    public ProfileAdapter(Context context, List<Question> ownQuestions) {
+    public ProfileAdapter(Context context, List<Post> ownPosts) {
         this.context = context;
-        this.ownQuestions = ownQuestions;
+        this.ownPosts = ownPosts;
     }
 
     @NonNull
@@ -37,70 +46,151 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Question question = ownQuestions.get(position);
-        holder.bind(question);
+        Post post = ownPosts.get(position);
+        // Bind differently based on whether the post object is a question or a response
+        if (post instanceof Response) {
+            Response response = (Response) post;
+
+            Log.i(TAG, "Response being binded" + response.getClaim());
+
+            holder.bindResponse(response);
+        } else {
+            Question question = (Question) post;
+
+            Log.i(TAG, "Question being binded " + question.getBody());
+            holder.bindQuestion(question);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return ownQuestions.size();
+        return ownPosts.size();
     }
 
     public void clear() {
-        ownQuestions.clear();
+        ownPosts.clear();
         notifyDataSetChanged();
     }
 
-    public void addAll(List<Question> ownQuestions) {
-        this.ownQuestions.addAll(ownQuestions);
+    public void addAll(List<Post> ownPosts) {
+        this.ownPosts.addAll(ownPosts);
         notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-
-        // Declare what view elements I am pulling in from item
+        // Declaring UI elements of post_item.xml
+        // UI elements for question portion of UI
         private TextView tvQuestionBody;
-        private TextView tvInteractionCount;
-        private ImageView iconReply;
-        private ImageView iconTreeView;
+        private TextView tvQuestionDescendants;
+        private ImageView iconQuestionReply;
+        private ImageView iconQuestionTreeView;
 
+        // UI elements for response portion of UI
+        private ConstraintLayout clResponse;
+        private TextView tvResponseBrief;
+        private TextView tvResponseClaim;
+        private TextView tvResponseSource;
+        private TextView tvResponseInteractions;
+        private ImageView iconResponseReply;
+        private ImageView iconResponseTreeView;
+        private ImageView iconAgree;
+        private ImageView iconDisagree;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            // Pull in item reference to view elements
+            // Instantiating references to previously declared UI elements
+            // Pull in references to question portion of layout
             tvQuestionBody = itemView.findViewById(R.id.tvQuestionBody);
-            tvInteractionCount = itemView.findViewById(R.id.tvInteractionCount);
-            iconReply = itemView.findViewById(R.id.iconReply);
-            iconTreeView = itemView.findViewById(R.id.iconTreeView);
+            tvQuestionDescendants = itemView.findViewById(R.id.tvQuestionDescendants);
+            iconQuestionReply = itemView.findViewById(R.id.iconQuestionReply);
+            iconQuestionTreeView = itemView.findViewById(R.id.iconQuestionTreeView);
+
+            // Pull in references to response portion of layout
+            clResponse = itemView.findViewById(R.id.clResponse);
+            tvResponseBrief = itemView.findViewById(R.id.tvResponseBrief);
+            tvResponseClaim = itemView.findViewById(R.id.tvResponseClaim);
+            tvResponseSource = itemView.findViewById(R.id.tvResponseSource);
+            tvResponseInteractions = itemView.findViewById(R.id.tvResponseInteractions);
+            iconResponseReply = itemView.findViewById(R.id.iconResponseReply);
+            iconResponseTreeView = itemView.findViewById(R.id.iconResponseTreeView);
+            iconAgree = itemView.findViewById(R.id.iconAgree);
+            iconDisagree = itemView.findViewById(R.id.iconDisagree);
         }
 
-        public void bind(final Question question) {
-            // Set UI elements
+        public void bindQuestion(final Question question) {
             tvQuestionBody.setText(question.getBody());
+            tvQuestionDescendants.setText( Integer.toString(question.getDescendants()) );
 
-            // Set up listeners
-            iconReply.setOnClickListener(new View.OnClickListener() {
+            iconQuestionReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ComposeResponseActivity.class);
-                    Parcelable questionWrapped = Parcels.wrap(question);
-                    intent.putExtra("parentType", "question");
-                    intent.putExtra("question", questionWrapped);
+                    intent.putExtra("parentType", Constants.KEY_QUESTION_TYPE);
+                    Parcelable wrappedQuestion = Parcels.wrap(question);
+                    intent.putExtra(Constants.KEY_QUESTION_TYPE, wrappedQuestion);
                     context.startActivity(intent);
                 }
             });
 
-
-            iconTreeView.setOnClickListener(new View.OnClickListener() {
+            iconQuestionTreeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: Tree View Icon to tree view page listener
+                    // TODO: Fill functionality
                     Toast.makeText(context, "Got to implement that tree view still", Toast.LENGTH_SHORT).show();
 
                 }
             });
+        }
 
+        // Necessary because binding the response requires a query for the parent
+        public void bindResponse(final Response response) {
+            // Bind associated question object and fill its information in
+            getResponseQuestionAndFill( response.getQuestionRef() );
+
+            clResponse.setVisibility(View.VISIBLE);
+            tvResponseBrief.setText( response.getBrief() );
+            tvResponseClaim.setText( response.getClaim() );
+            tvResponseSource.setText( response.getSource() );
+            tvResponseInteractions.setText( Integer.toString(response.getAgreements() + response.getDisagreements() ) );
+
+            iconResponseReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ComposeResponseActivity.class);
+                    intent.putExtra("parentType", Constants.KEY_RESPONSE_TYPE);
+                    Parcelable wrappedResponse = Parcels.wrap(response);
+                    intent.putExtra(Constants.KEY_RESPONSE_TYPE, wrappedResponse);
+                    context.startActivity(intent);
+                }
+            });
+
+            // TODO: Implement
+            iconResponseTreeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
+
+        private void getResponseQuestionAndFill(String questionRef) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("posts")
+                    .document(questionRef)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()){
+                                DocumentSnapshot document = task.getResult();
+                                Question question = document.toObject(Question.class);
+
+                                bindQuestion(question);
+
+                            }
+                        }
+                    });
         }
     }
 }
