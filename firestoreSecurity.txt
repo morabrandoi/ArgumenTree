@@ -8,12 +8,8 @@ service cloud.firestore {
       allow delete: if resource.data.auth_user_id == request.auth.uid;
     }
 
-    match /questions/{questionID} {
-        allow read, write: if true;
-    }
-
-    match /responses/{responseID} {
-        allow read, write: if true;
+    match /posts/{postID}{
+        	allow read, write: if true;
     }
   }
 }
