@@ -1,11 +1,16 @@
 package com.example.argumentree.models;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
 
 public class Response {
+    // for local client use
+    @Exclude private String docID;
+
+    // Fields which match the Firestore object
     private int descendants;
     private int agreements;
     private int disagreements;
@@ -31,6 +36,14 @@ public class Response {
         this.source = source;
         this.sourceQRef = sourceQRef;
         this.createdAt = createdAt;
+    }
+
+    public String getDocID() {
+        return docID;
+    }
+
+    public void setDocID(String docID) {
+        this.docID = docID;
     }
 
     public int getDescendants() {

@@ -2,15 +2,20 @@ package com.example.argumentree;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.argumentree.models.Question;
+
+import org.parceler.Parcels;
+
 import java.util.List;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder> {
@@ -26,7 +31,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.profile_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.post_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -79,11 +84,22 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ComposeResponseActivity.class);
+                    Parcelable questionWrapped = Parcels.wrap(question);
+                    intent.putExtra("parentType", "question");
+                    intent.putExtra("question", questionWrapped);
                     context.startActivity(intent);
                 }
             });
 
-            // TODO: Tree View Icon to tree view page listener
+
+            iconTreeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO: Tree View Icon to tree view page listener
+                    Toast.makeText(context, "Got to implement that tree view still", Toast.LENGTH_SHORT).show();
+
+                }
+            });
 
         }
     }

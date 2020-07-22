@@ -138,19 +138,18 @@ public class MyProfileFragment extends Fragment {
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Query query = db.collection("questions").whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
-
+        query.limit(25);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "success");
+                    Log.d(TAG, "successfull pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-
                         Question question = document.toObject(Question.class);
+                        question.setDocID(document.getId());
                         ownQuestions.add(question);
-                        profileAdapter.notifyDataSetChanged();
                     }
+                    profileAdapter.notifyDataSetChanged();
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }

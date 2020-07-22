@@ -40,10 +40,6 @@ public class ComposeQuestionActivity extends AppCompatActivity {
     // Model member variables
     private List<String> allChips;
 
-    // Database vars
-
-    //
-
 
 
     @Override
@@ -60,8 +56,6 @@ public class ComposeQuestionActivity extends AppCompatActivity {
         ivAddChip = findViewById(R.id.ivAddChip);
         switchRelaxedMode = findViewById(R.id.switchRelaxedMode);
 
-        // Filling views
-
         // Setting up listeners
         // Add chip
         ivAddChip.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +63,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final Chip chip = new Chip(ComposeQuestionActivity.this);
                 final String tagText = etAddChip.getText().toString();
+                allChips.add(tagText);
                 chip.setText(tagText);
                 chip.setCloseIconVisible(true);
 
@@ -94,13 +89,11 @@ public class ComposeQuestionActivity extends AppCompatActivity {
                 User user = SharedPrefHelper.getUser(ComposeQuestionActivity.this);
 
                 String body = etQuestionBody.getText().toString();
-                List<String> tags = new ArrayList<String>();
-                    tags.add("Sample1");
-                    tags.add("Sample2");
+                List<String> tags = allChips;
                 String authorRef = user.getUsername();
                 String mediaRef = null; // TODO: STRETCH: Add media to posts
                 int descendants = 0;
-                boolean relaxed = false; // TODO: pull info from UI toggle switch
+                boolean relaxed = switchRelaxedMode.isChecked();
                 Date createdAt = new Date();
 
 

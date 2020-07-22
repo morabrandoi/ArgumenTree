@@ -1,11 +1,19 @@
 package com.example.argumentree.models;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
+
+import org.parceler.Parcel;
 
 import java.util.Date;
 import java.util.List;
 
+@Parcel
 public class Question {
+    // Extra field for local use
+    @Exclude private String docID;
+
+    // Fields in firestore document
     private String body;
     private List<String> tags;
     private String authorRef;
@@ -26,6 +34,14 @@ public class Question {
         this.descendants = descendants;
         this.relaxed = relaxed;
         this.createdAt = createdAt;
+    }
+
+    public String getDocID() {
+        return docID;
+    }
+
+    public void setDocID(String docID) {
+        this.docID = docID;
     }
 
     public String getBody() {
