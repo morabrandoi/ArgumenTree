@@ -93,7 +93,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 response.setQuestionRef(questionRef);
                 response.setBrief( etBrief.getText().toString() );
                 response.setClaim( etClaim.getText().toString() );
-                response.setSource( etClaim.getText().toString() );
+                response.setSource( etSource.getText().toString() );
                 response.setSourceQRef(null);// TODO: implement auto question posting
                 response.setCreatedAt(new Date());
 
