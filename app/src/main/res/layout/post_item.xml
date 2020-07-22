@@ -7,74 +7,146 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvQ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:text="Q: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/tvQuestionBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvQ"
-        app:layout_constraintTop_toBottomOf="@+id/tvQ"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Sample question here why is there never square icecream cones?" />
 
     <ImageView
-        android:id="@+id/agreeImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
-        app:srcCompat="@android:drawable/arrow_up_float" />
-
-    <ImageView
-        android:id="@+id/disagreeImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/agreeImage"
-        app:srcCompat="@android:drawable/arrow_down_float" />
-
-    <TextView
-        android:id="@+id/tvInteractionCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/agreeImage"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
-        tools:text="23k" />
-
-    <ImageView
-        android:id="@+id/iconReply"
+        android:id="@+id/iconQuestionReply"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
+        app:layout_constraintEnd_toEndOf="@+id/iconQuestionTreeView"
+        app:layout_constraintStart_toStartOf="@+id/tvQuestionDescendants"
+        app:layout_constraintTop_toBottomOf="@+id/clResponse"
         app:srcCompat="@android:drawable/ic_menu_send" />
 
     <ImageView
-        android:id="@+id/iconTreeView"
+        android:id="@+id/iconQuestionTreeView"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
+        app:layout_constraintTop_toBottomOf="@+id/clResponse"
         app:srcCompat="@android:drawable/ic_menu_share" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clResponse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/ResponseSubBlock"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvResponseBrief"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="This is the Brief of the claim" />
+
+        <TextView
+            android:id="@+id/tvResponseClaim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseBrief"
+            tools:text="This is the claim of the post and might be somewhat lengthy" />
+
+        <TextView
+            android:id="@+id/tvResponseSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autoLink="web"
+            android:linksClickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseClaim"
+            tools:text="This is the source and could be a long link, google.com" />
+
+        <ImageView
+            android:id="@+id/iconResponseTreeView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            app:srcCompat="@android:drawable/ic_menu_share" />
+
+        <ImageView
+            android:id="@+id/iconResponseReply"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/iconResponseTreeView"
+            app:layout_constraintStart_toStartOf="@+id/iconAgree"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            app:srcCompat="@android:drawable/ic_menu_send" />
+
+        <TextView
+            android:id="@+id/tvResponseInteractions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/iconAgree"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            tools:text="23k" />
+
+        <ImageView
+            android:id="@+id/iconAgree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            app:srcCompat="@android:drawable/arrow_up_float" />
+
+        <ImageView
+            android:id="@+id/iconDisagree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconAgree"
+            app:srcCompat="@android:drawable/arrow_down_float" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvQuestionDescendants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iconQuestionReply"
+        tools:text="23" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

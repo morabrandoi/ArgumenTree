@@ -25,7 +25,9 @@ import com.example.argumentree.ProfileAdapter;
 import com.example.argumentree.R;
 import com.example.argumentree.SharedPrefHelper;
 import com.example.argumentree.UserAuthActivity;
+import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
+import com.example.argumentree.models.Response;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +44,7 @@ import java.util.List;
 public class MyProfileFragment extends Fragment {
     public static final String TAG = "MyProfileFragment";
 
+    // UI variables
     private Button btnLogOut;
     private ImageView ivProfilePageProfilePic;
     private TextView tvProfilePageUsername;
@@ -50,7 +53,9 @@ public class MyProfileFragment extends Fragment {
     private TextView tvLikeCount;
     private TextView tvHasContributedTo;
     private RecyclerView rvContributions;
-    private List<Question> ownQuestions;
+
+    // Model variables
+    private List<Post> ownPosts;
     private ProfileAdapter profileAdapter;
     private User user;
 
@@ -81,8 +86,8 @@ public class MyProfileFragment extends Fragment {
         rvContributions = view.findViewById(R.id.rvContributions);
 
         // Setting up recycler view
-        ownQuestions = new ArrayList<Question>();
-        profileAdapter = new ProfileAdapter(getContext(), ownQuestions);
+        ownPosts = new ArrayList<Post>();
+        profileAdapter = new ProfileAdapter(getContext(), ownPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvContributions.setAdapter(profileAdapter);
 
@@ -133,19 +138,29 @@ public class MyProfileFragment extends Fragment {
 
     private void fillContributionsFromFirestore(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Query query = db.collection("posts")
+                .orderBy(Constants.KEY_POST_CREATED_AT, Query.Direction.ASCENDING)
+                .whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
 
-        Query query = db.collection("questions").whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
-        query.limit(25);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "successfull pull of posts");
+                    Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Question question = document.toObject(Question.class);
-                        question.setDocID(document.getId());
-                        ownQuestions.add(question);
+                        // check which kind it is
+                        String postType = document.getString(Constants.KEY_POST_TYPE);
+                        if (postType.equals(Constants.KEY_QUESTION_TYPE)){
+                            Question question = document.toObject(Question.class);
+                            question.setDocID(document.getId());
+                            ownPosts.add(question);
+                        }
+                        else if (postType.equals("response")){
+                            Response response = document.toObject(Response.class);
+                            response.setDocID(document.getId());
+                            ownPosts.add(response);
+                        }
+
                     }
                     profileAdapter.notifyDataSetChanged();
                 } else {

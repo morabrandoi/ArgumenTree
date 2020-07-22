@@ -1,19 +1,24 @@
 package com.example.argumentree.models;
 
+import com.example.argumentree.Constants;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 
-
-public class Response {
+@Parcel
+public class Response extends Post{
     // for local client use
     @Exclude private String docID;
 
     // Fields which match the Firestore object
+    final private String postType = Constants.KEY_RESPONSE_TYPE;
     private int descendants;
     private int agreements;
     private int disagreements;
+    private String authorRef;
     private String parentRef;
     private String questionRef;
     private String brief;
@@ -25,10 +30,11 @@ public class Response {
     public Response(){
     }
 
-    public Response(int descendants, int agreements, int disagreements, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
+    public Response(int descendants, int agreements, int disagreements, String authorRef, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
         this.descendants = descendants;
         this.agreements = agreements;
         this.disagreements = disagreements;
+        this.authorRef = authorRef;
         this.parentRef = parentRef;
         this.questionRef = questionRef;
         this.brief = brief;
@@ -36,6 +42,18 @@ public class Response {
         this.source = source;
         this.sourceQRef = sourceQRef;
         this.createdAt = createdAt;
+    }
+
+    public String getAuthorRef() {
+        return authorRef;
+    }
+
+    public void setAuthorRef(String authorRef) {
+        this.authorRef = authorRef;
+    }
+
+    public String getPostType() {
+        return postType;
     }
 
     public String getDocID() {

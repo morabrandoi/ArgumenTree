@@ -39,8 +39,6 @@ public class ComposeQuestionActivity extends AppCompatActivity {
     // Model member variables
     private List<String> allChips;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +93,9 @@ public class ComposeQuestionActivity extends AppCompatActivity {
                 boolean relaxed = switchRelaxedMode.isChecked();
                 Date createdAt = new Date();
 
-
                 Question question = new Question(body, tags, authorRef, mediaRef, descendants, relaxed, createdAt);
 
-                db.collection("questions")
+                db.collection("posts")
                         .add(question)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override

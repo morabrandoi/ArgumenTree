@@ -1,5 +1,6 @@
 package com.example.argumentree.models;
 
+import com.example.argumentree.Constants;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -9,11 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 @Parcel
-public class Question {
+public class Question extends Post{
     // Extra field for local use
     @Exclude private String docID;
 
     // Fields in firestore document
+    final private String postType = Constants.KEY_QUESTION_TYPE;
     private String body;
     private List<String> tags;
     private String authorRef;
@@ -34,6 +36,10 @@ public class Question {
         this.descendants = descendants;
         this.relaxed = relaxed;
         this.createdAt = createdAt;
+    }
+
+    public String getPostType() {
+        return postType;
     }
 
     public String getDocID() {

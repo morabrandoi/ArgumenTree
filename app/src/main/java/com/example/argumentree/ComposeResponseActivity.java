@@ -42,6 +42,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
     private String questionRef; // if parent is question then parentType == questionRoot
     private String parentRef;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,17 +52,22 @@ public class ComposeResponseActivity extends AppCompatActivity {
         Intent passedIn = getIntent();
         parentType = passedIn.getStringExtra("parentType");
 
+        // pulling info from user from SharedPrefs
+        final User user = SharedPrefHelper.getUser(ComposeResponseActivity.this);
+
         if (parentType.equals("question")) {
             // pull question object out of extras
 
             Question question = Parcels.unwrap(passedIn.getParcelableExtra("question"));
             questionRef = question.getDocID();
             parentRef = question.getDocID();
+
         }
         else if (parentType.equals("response")){
             Response response = Parcels.unwrap(passedIn.getParcelableExtra("response"));
             questionRef = response.getQuestionRef();
             parentRef = response.getDocID();
+
         }
         else{
             throw new RuntimeException("The question type passed in to ComposeResponseActivity is invalid");
@@ -72,7 +78,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
         etBrief = findViewById(R.id.etBrief);
         tvClaim = findViewById(R.id.tvClaim);
         etClaim = findViewById(R.id.etClaim);
-        tvSource = findViewById(R.id.tvSource);
+        tvSource = findViewById(R.id.tvResponseSource);
         etSource = findViewById(R.id.etSource);
         btnPostResponse = findViewById(R.id.btnPostResponse);
 
@@ -82,22 +88,22 @@ public class ComposeResponseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 SharedPrefHelper.hasUserIn(ComposeResponseActivity.this);
-                User user = SharedPrefHelper.getUser(ComposeResponseActivity.this);
 
                 Response response = new Response();
 
                 response.setDescendants(0);
                 response.setAgreements(0);
                 response.setDisagreements(0);
+                response.setAuthorRef( user.getUsername() );
                 response.setParentRef(parentRef);
                 response.setQuestionRef(questionRef);
                 response.setBrief( etBrief.getText().toString() );
                 response.setClaim( etClaim.getText().toString() );
                 response.setSource( etSource.getText().toString() );
-                response.setSourceQRef(null);// TODO: implement auto question posting
+                response.setSourceQRef(null); // TODO: implement auto question posting
                 response.setCreatedAt(new Date());
 
-                db.collection("responses")
+                db.collection("posts")
                         .add(response)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
