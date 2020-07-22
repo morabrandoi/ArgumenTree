@@ -1,4 +1,4 @@
-package com.example.argumentree.fragments;
+package com.example.argumentree;
 
 import android.app.Activity;
 import android.content.Context;

@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.argumentree.Constants;
-import com.example.argumentree.MainActivity;
 import com.example.argumentree.R;
+import com.example.argumentree.SharedPrefHelper;
 import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;

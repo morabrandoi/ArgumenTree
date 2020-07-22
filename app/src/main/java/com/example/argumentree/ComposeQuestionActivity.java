@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.argumentree.fragments.SharedPrefHelper;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnFailureListener;

@@ -5,31 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.argumentree.fragments.SharedPrefHelper;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.Response;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ComposeResponseActivity extends AppCompatActivity {
 

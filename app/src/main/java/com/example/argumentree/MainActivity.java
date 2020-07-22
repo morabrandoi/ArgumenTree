@@ -14,7 +14,6 @@ import com.example.argumentree.fragments.HomeFragment;
 import com.example.argumentree.fragments.NotificationsFragment;
 import com.example.argumentree.fragments.MyProfileFragment;
 import com.example.argumentree.fragments.SearchFragment;
-import com.example.argumentree.fragments.SharedPrefHelper;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
