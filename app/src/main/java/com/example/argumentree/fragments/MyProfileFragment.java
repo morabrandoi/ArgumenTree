@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.argumentree.Constants;
-import com.example.argumentree.ProfileAdapter;
+import com.example.argumentree.PostsAdapter;
 import com.example.argumentree.R;
 import com.example.argumentree.SharedPrefHelper;
 import com.example.argumentree.UserAuthActivity;
@@ -56,7 +56,7 @@ public class MyProfileFragment extends Fragment {
 
     // Model variables
     private List<Post> ownPosts;
-    private ProfileAdapter profileAdapter;
+    private PostsAdapter postsAdapter;
     private User user;
 
     public MyProfileFragment() {
@@ -87,10 +87,9 @@ public class MyProfileFragment extends Fragment {
 
         // Setting up recycler view
         ownPosts = new ArrayList<Post>();
-        profileAdapter = new ProfileAdapter(getContext(), ownPosts);
+        postsAdapter = new PostsAdapter(getContext(), ownPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvContributions.setAdapter(profileAdapter);
-
+        rvContributions.setAdapter(postsAdapter);
 
         // fill view with data
         user = fillUserInfoFromSharedPrefs();
@@ -162,7 +161,7 @@ public class MyProfileFragment extends Fragment {
                         }
 
                     }
-                    profileAdapter.notifyDataSetChanged();
+                    postsAdapter.notifyDataSetChanged();
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
