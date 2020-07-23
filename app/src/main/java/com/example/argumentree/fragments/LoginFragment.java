@@ -24,6 +24,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -94,27 +96,25 @@ public class LoginFragment extends Fragment {
 
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
-
         // Parent activity
         final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-
-                        // putting User object in shared prefs
-                        User user = document.toObject(User.class);
-                        SharedPrefHelper.putUserIn(parentActivity, user);
-
+        db.collection("users")
+                .document(currentUserUID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            // putting User object in shared prefs
+                            DocumentSnapshot document = task.getResult();
+                            User user = document.toObject(User.class);
+                            SharedPrefHelper.putUserIn(parentActivity, user);
+                        }
                     }
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
+                });
     }
 
 }
+
+//
+

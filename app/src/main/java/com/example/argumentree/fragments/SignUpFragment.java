@@ -138,7 +138,7 @@ public class SignUpFragment extends Fragment {
         final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
 
         // Posting user object to firestore and storing user object in shared prefs when successful
-        db.collection("users").document(username)
+        db.collection("users").document(uid)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

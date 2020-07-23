@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -95,25 +96,20 @@ public class MainActivity extends AppCompatActivity {
 
             String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            Query query = db.collection("users").whereEqualTo(Constants.KEY_USER_AUTH_USER_ID, currentUserUID);
-
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d(TAG, document.getId() + " => " + document.getData());
-
-                            // putting User object in shared prefs
-                            User user = document.toObject(User.class);
-                            SharedPrefHelper.putUserIn(MainActivity.this, user);
-
+            db.collection("users")
+                    .document(currentUserUID)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()){
+                                // putting User object in shared prefs
+                                DocumentSnapshot document = task.getResult();
+                                User user = document.toObject(User.class);
+                                SharedPrefHelper.putUserIn(MainActivity.this, user);
+                            }
                         }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                }
-            });
+                    });
         }
 
     }
