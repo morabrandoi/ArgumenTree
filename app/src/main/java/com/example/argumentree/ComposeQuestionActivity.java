@@ -87,7 +87,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
 
                 String body = etQuestionBody.getText().toString();
                 List<String> tags = allChips;
-                String authorRef = user.getUsername();
+                String authorRef = user.getAuthUserID();
                 String mediaRef = null; // TODO: STRETCH: Add media to posts
                 int descendants = 0;
                 boolean relaxed = switchRelaxedMode.isChecked();

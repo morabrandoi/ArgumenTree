@@ -94,7 +94,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 response.setDescendants(0);
                 response.setAgreements(0);
                 response.setDisagreements(0);
-                response.setAuthorRef( user.getUsername() );
+                response.setAuthorRef( user.getAuthUserID() );
                 response.setParentRef(parentRef);
                 response.setQuestionRef(questionRef);
                 response.setBrief( etBrief.getText().toString() );
