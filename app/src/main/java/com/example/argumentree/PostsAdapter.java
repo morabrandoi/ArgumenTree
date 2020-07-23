@@ -3,7 +3,6 @@ package com.example.argumentree;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +92,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             private ImageView iconAgree;
             private ImageView iconDisagree;
 
+            // Model
+            User questionUser;
+            User responseUser;
+
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 // Question UI references
@@ -113,11 +116,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 iconResponseTreeView = itemView.findViewById(R.id.iconResponseTreeView);
                 iconAgree = itemView.findViewById(R.id.iconAgree);
                 iconDisagree = itemView.findViewById(R.id.iconDisagree);
+
+
             }
 
             public void bindQuestion(final Question question) {
                 // Fill username
-                fillUsername(question.getAuthorRef(), question);
+                getUserAndFill(question.getAuthorRef(), question);
 
                 // Fill initial
                 tvQuestionBody.setText(question.getBody());
@@ -127,9 +132,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ComposeResponseActivity.class);
-                        intent.putExtra("parentType", Constants.KEY_QUESTION_TYPE);
+                        intent.putExtra("parentType", Constants.QUESTION);
                         Parcelable wrappedQuestion = Parcels.wrap(question);
-                        intent.putExtra(Constants.KEY_QUESTION_TYPE, wrappedQuestion);
+                        intent.putExtra(Constants.QUESTION, wrappedQuestion);
                         context.startActivity(intent);
                     }
                 });
@@ -140,6 +145,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     public void onClick(View view) {
                         // TODO: Fill functionality
                         Toast.makeText(context, "Got to implement that tree view still", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                tvQuestionUsername.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
                     }
                 });
@@ -148,7 +159,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             // Necessary because binding the response requires a query for the parent
             public void bindResponse(final Response response) {
                 // fill username
-                fillUsername(response.getAuthorRef(), response);
+                getUserAndFill(response.getAuthorRef(), response);
                 // Bind associated question and fill its information in
                 getResponseQuestionAndFill(response.getQuestionRef());
 
@@ -162,9 +173,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ComposeResponseActivity.class);
-                        intent.putExtra("parentType", Constants.KEY_RESPONSE_TYPE);
+                        intent.putExtra("parentType", Constants.RESPONSE);
                         Parcelable wrappedResponse = Parcels.wrap(response);
-                        intent.putExtra(Constants.KEY_RESPONSE_TYPE, wrappedResponse);
+                        intent.putExtra(Constants.RESPONSE, wrappedResponse);
                         context.startActivity(intent);
                     }
                 });
@@ -191,7 +202,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             }
 
             // Queries for user of post and fills in username information from the result
-            private void fillUsername(String authorRef, final Post post){
+            private void getUserAndFill(String authorRef, final Post post){
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                 db.collection("users")
@@ -204,16 +215,43 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                                     DocumentSnapshot document = task.getResult();
                                     User user = document.toObject(User.class);
 
-                                    if (post instanceof Question){
-                                        tvQuestionUsername.setText(user.getUsername());
-                                    }
-                                    else{
-                                        tvResponseUsername.setText(user.getUsername());
-                                    }
+                                    fillUserDependantInfo(user, post);
 
                                 }
                             }
                         });
+            }
+
+            private void fillUserDependantInfo(User user, final Post post){
+                if (post instanceof Question){
+                    questionUser = user;
+                    tvQuestionUsername.setText(user.getUsername());
+                    tvQuestionUsername.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, OthersProfileActivity.class);
+                            Parcelable wrappedUser = Parcels.wrap(questionUser);
+                            intent.putExtra("user", wrappedUser);
+                            context.startActivity(intent);
+                        }
+                    });
+
+
+                }
+                else{
+                    responseUser = user;
+                    tvResponseUsername.setText(user.getUsername());
+                    tvResponseUsername.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, OthersProfileActivity.class);
+                            Parcelable wrappedUser = Parcels.wrap(responseUser);
+                            intent.putExtra("user", wrappedUser);
+                            context.startActivity(intent);
+                        }
+                    });
+
+                }
             }
         }
 }

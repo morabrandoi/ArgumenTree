@@ -1,8 +1,12 @@
 package com.example.argumentree.models;
 
 import com.google.firebase.firestore.ServerTimestamp;
+
+import org.parceler.Parcel;
+
 import java.util.Date;
 
+@Parcel
 public class User {
 
     private String email;
