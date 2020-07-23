@@ -236,7 +236,7 @@ public class MyProfileFragment extends Fragment {
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("posts")
-                .orderBy(Constants.KEY_POST_CREATED_AT, Query.Direction.ASCENDING)
+                .orderBy(Constants.KEY_POST_CREATED_AT, Query.Direction.DESCENDING)
                 .whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
