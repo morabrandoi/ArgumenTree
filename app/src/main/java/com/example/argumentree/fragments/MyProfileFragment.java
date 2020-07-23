@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +41,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -51,7 +49,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +135,7 @@ public class MyProfileFragment extends Fragment {
                 // Clear sharedPreferences of logged in user
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(Constants.KEY_SP_CURRENT_USER, null);
+                editor.putString(Constants.SP_CURRENT_USER, null);
                 editor.apply();
             }
         });
@@ -204,7 +201,7 @@ public class MyProfileFragment extends Fragment {
 
         db.collection("users")
                 .document(user.getUid())
-                .update(Constants.KEY_USER_PROFILE_PIC, uri.toString())
+                .update(Constants.USER_PROFILE_PIC, uri.toString())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -236,8 +233,8 @@ public class MyProfileFragment extends Fragment {
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("posts")
-                .orderBy(Constants.KEY_POST_CREATED_AT, Query.Direction.DESCENDING)
-                .whereEqualTo(Constants.KEY_QUESTION_AUTHOR, user.getUsername());
+                .orderBy(Constants.POST_CREATED_AT, Query.Direction.DESCENDING)
+                .whereEqualTo(Constants.AUTHOR_REF, user.getAuthUserID());
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -246,8 +243,8 @@ public class MyProfileFragment extends Fragment {
                     Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         // check which kind it is
-                        String postType = document.getString(Constants.KEY_POST_TYPE);
-                        if (postType.equals(Constants.KEY_QUESTION_TYPE)) {
+                        String postType = document.getString(Constants.POST_TYPE);
+                        if (postType.equals(Constants.QUESTION)) {
                             Question question = document.toObject(Question.class);
                             question.setDocID(document.getId());
                             ownPosts.add(question);
