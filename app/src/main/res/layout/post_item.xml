@@ -46,7 +46,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/ResponseSubBlock"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="4dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -138,6 +143,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iconAgree"
             app:srcCompat="@android:drawable/arrow_down_float" />
+
+        <TextView
+            android:id="@+id/tvResponseUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconDisagree"
+            tools:text="UsernameHere" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -148,5 +164,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iconQuestionReply"
         tools:text="23" />
+
+    <TextView
+        android:id="@+id/tvQuestionUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuestionDescendants"
+        tools:text="UsernameHere" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

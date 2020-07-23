@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.Response;
+import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -50,14 +51,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             // Bind differently based on whether the post object is a question or a response
             if (post instanceof Response) {
                 Response response = (Response) post;
-
-                Log.i(TAG, "Response being binded" + response.getClaim());
-
                 holder.bindResponse(response);
             } else {
                 Question question = (Question) post;
-
-                Log.i(TAG, "Question being binded " + question.getBody());
                 holder.bindQuestion(question);
             }
         }
@@ -78,17 +74,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            // Question UI
             private TextView tvQuestionBody;
             private TextView tvQuestionDescendants;
+            private TextView tvQuestionUsername;
             private ImageView iconQuestionReply;
             private ImageView iconQuestionTreeView;
 
-            // UI elements for response portion of UI
+            // Response UI
             private ConstraintLayout clResponse;
             private TextView tvResponseBrief;
             private TextView tvResponseClaim;
             private TextView tvResponseSource;
             private TextView tvResponseInteractions;
+            private TextView tvResponseUsername;
             private ImageView iconResponseReply;
             private ImageView iconResponseTreeView;
             private ImageView iconAgree;
@@ -96,19 +95,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                // Instantiating references to previously declared UI elements
-                // Pull in references to question portion of layout
+                // Question UI references
                 tvQuestionBody = itemView.findViewById(R.id.tvQuestionBody);
                 tvQuestionDescendants = itemView.findViewById(R.id.tvQuestionDescendants);
+                tvQuestionUsername = itemView.findViewById(R.id.tvQuestionUsername);
                 iconQuestionReply = itemView.findViewById(R.id.iconQuestionReply);
                 iconQuestionTreeView = itemView.findViewById(R.id.iconQuestionTreeView);
 
-                // Pull in references to response portion of layout
+                // Response UI references
                 clResponse = itemView.findViewById(R.id.clResponse);
                 tvResponseBrief = itemView.findViewById(R.id.tvResponseBrief);
                 tvResponseClaim = itemView.findViewById(R.id.tvResponseClaim);
                 tvResponseSource = itemView.findViewById(R.id.tvResponseSource);
                 tvResponseInteractions = itemView.findViewById(R.id.tvResponseInteractions);
+                tvResponseUsername = itemView.findViewById(R.id.tvResponseUsername);
                 iconResponseReply = itemView.findViewById(R.id.iconResponseReply);
                 iconResponseTreeView = itemView.findViewById(R.id.iconResponseTreeView);
                 iconAgree = itemView.findViewById(R.id.iconAgree);
@@ -116,6 +116,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             }
 
             public void bindQuestion(final Question question) {
+                // Fill username
+                fillUsername(question.getAuthorRef(), question);
+
+                // Fill initial
                 tvQuestionBody.setText(question.getBody());
                 tvQuestionDescendants.setText(Integer.toString(question.getDescendants()));
 
@@ -130,6 +134,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     }
                 });
 
+                // Set listeners
                 iconQuestionTreeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -142,7 +147,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
             // Necessary because binding the response requires a query for the parent
             public void bindResponse(final Response response) {
-                // Bind associated question object and fill its information in
+                // fill username
+                fillUsername(response.getAuthorRef(), response);
+                // Bind associated question and fill its information in
                 getResponseQuestionAndFill(response.getQuestionRef());
 
                 clResponse.setVisibility(View.VISIBLE);
@@ -182,6 +189,31 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                             }
                         });
             }
-        }
 
+            // Queries for user of post and fills in username information from the result
+            private void fillUsername(String authorRef, final Post post){
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                db.collection("users")
+                        .document(authorRef)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    User user = document.toObject(User.class);
+
+                                    if (post instanceof Question){
+                                        tvQuestionUsername.setText(user.getUsername());
+                                    }
+                                    else{
+                                        tvResponseUsername.setText(user.getUsername());
+                                    }
+
+                                }
+                            }
+                        });
+            }
+        }
 }
