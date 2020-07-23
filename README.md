@@ -196,8 +196,9 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
 
 ### Collections
 - users
-- questions
-- responses
+- posts
+    - responses
+    - questions
 
 ### Document Schemas
 #### User
