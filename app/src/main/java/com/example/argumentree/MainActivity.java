@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -46,10 +47,17 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
                 if (menuItem.getItemId() == R.id.action_compose) {
-                    // Executes if compose Tab was clicked
-                    Intent intent = new Intent(MainActivity.this, ComposeQuestionActivity.class);
-                    startActivity(intent);
-                    return true;
+                    // Check if user is signed in. If not -> sign in page. If so -> compose page
+                    if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                        Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
+                        startActivity(intent);
+                        return false;
+                    }
+                    else{
+                        Intent intent = new Intent(MainActivity.this, ComposeQuestionActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
                 }
 
 
@@ -58,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.action_profile:
                         // If not signed in, go to log in page.
-                        Log.e(TAG, "GetUID" + FirebaseAuth.getInstance().getCurrentUser());
                         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                             Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
                             startActivity(intent);
