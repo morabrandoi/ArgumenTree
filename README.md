@@ -209,31 +209,35 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
    | bio           | String   | short text a person can set for their profile   |
    | auth_user_id  | String   | The ID of the user in Firebase Auth             |
    | likes         | Number   | The number of likes that have been given to a profile|
-   | createdAt     | Timestamp| The time the user was created                   |
+   | createdAt     | Timestamp| The time the user was created                   | 
    
-#### Question Post
+#### Post - Question variation
    | Property    | Type         | Description                                   |
    | ------------| ----------   | ----------------------------------------------|
+   | postType    | String       | Always has value "question"                   |
    | body        | String       | body of the question, should end with a "?"   |
    | tags        | List\<String>| The categories the person attaches to their Q | 
    | authorRef   | ref\<User>   | question author                               |
-   | media       | Reference    | reference to firestorage location for image   |
+   | mediaRef    | Reference    | reference to firestorage location for image   |
    | descendants | Number       | total number of nodes below it in the tree    |
    | createdAt   | Timestamp    | the time the post was created                 |
+   | relaxed     | Boolean      | whether responses require sources or not      |
    
 
-#### Response Post
+#### Post - Response Variation
    | Property       | Type           | Description                                |
    | -------------  | -------------- | ------------------------------------------ |
-   | parentRef      | ref\<response> | Response above.                            |
-   | questionRef    | ref\<question> | the Head question this is answering        |
+   | postType       | String         | Always has value "response"                |
+   | parentRef      | ref\<Post>     | Response above.                            |
+   | questionRef    | ref\<Post>     | the Head question this is answering        |
+   | authorRef      | ref\<User>     | the reference to the person who posted     |
    | descendants    | Number         | total number of nodes below it in the tree |
    | agreements     | Number         | number of up Votes for the post            |
    | disagreements  | Number         | number of down Votes                       |
    | brief          | String         | short text summarizing claim               |
    | claim          | String         | longer piece of text stating the claim     |
    | source         | String         | reference to source document               |
-   | sourceQRef     | ref\<question> | reference to automated question post asking if source is valid |
+   | sourceQRef     | ref\<Post>     | reference to automated question post asking if source is valid |
    | createdAt      | Timestamp      | time the post was created |
    
    
