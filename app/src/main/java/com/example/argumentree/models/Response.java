@@ -14,7 +14,7 @@ public class Response extends Post{
     @Exclude private String docID;
 
     // Fields which match the Firestore object
-    final private String postType = Constants.KEY_RESPONSE_TYPE;
+    final private String postType = Constants.RESPONSE;
     private int descendants;
     private int agreements;
     private int disagreements;

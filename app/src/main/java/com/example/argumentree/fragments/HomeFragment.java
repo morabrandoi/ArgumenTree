@@ -72,7 +72,7 @@ public class HomeFragment extends Fragment {
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("posts")
-                .orderBy(Constants.KEY_POST_CREATED_AT, Query.Direction.DESCENDING);
+                .orderBy(Constants.POST_CREATED_AT, Query.Direction.DESCENDING);
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -81,8 +81,8 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         // check which kind it is
-                        String postType = document.getString(Constants.KEY_POST_TYPE);
-                        if (postType.equals(Constants.KEY_QUESTION_TYPE)) {
+                        String postType = document.getString(Constants.POST_TYPE);
+                        if (postType.equals(Constants.QUESTION)) {
                             Question question = document.toObject(Question.class);
                             question.setDocID(document.getId());
                             homePosts.add(question);

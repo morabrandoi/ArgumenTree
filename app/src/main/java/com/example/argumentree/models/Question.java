@@ -15,7 +15,7 @@ public class Question extends Post{
     @Exclude private String docID;
 
     // Fields in firestore document
-    final private String postType = Constants.KEY_QUESTION_TYPE;
+    final private String postType = Constants.QUESTION;
     private String body;
     private List<String> tags;
     private String authorRef;
