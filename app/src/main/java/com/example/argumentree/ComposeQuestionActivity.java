@@ -4,8 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
+import android.transition.TransitionValues;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,8 +34,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+// TODO: figure out animations
 public class ComposeQuestionActivity extends AppCompatActivity {
     public static final String TAG = "ComposeQuestionActivity";
+
 
     // View member variables
     private EditText etQuestionBody;
@@ -43,6 +54,13 @@ public class ComposeQuestionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_question);
+
+        // set transition
+        Transition enterTransition = TransitionInflater.from(this).inflateTransition(R.transition.slide_up);
+        Transition exitTransition = TransitionInflater.from(this).inflateTransition(R.transition.slide_down);
+        getWindow().setEnterTransition(enterTransition);
+        getWindow().setExitTransition(exitTransition);
+
         allChips = new ArrayList<>();
 
         // Pulling view references in

@@ -147,6 +147,7 @@
         <TextView
             android:id="@+id/tvResponseUsername"
             android:layout_width="wrap_content"
+            android:transitionName="username"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="12sp"
@@ -169,6 +170,7 @@
         android:id="@+id/tvQuestionUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:transitionName="username"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textSize="12sp"

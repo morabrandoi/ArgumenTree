@@ -1,5 +1,7 @@
 package com.example.argumentree;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -173,6 +175,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ComposeResponseActivity.class);
+
                         intent.putExtra("parentType", Constants.RESPONSE);
                         Parcelable wrappedResponse = Parcels.wrap(response);
                         intent.putExtra(Constants.RESPONSE, wrappedResponse);
@@ -231,8 +234,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         public void onClick(View view) {
                             Intent intent = new Intent(context, OthersProfileActivity.class);
                             Parcelable wrappedUser = Parcels.wrap(questionUser);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, (View) tvQuestionUsername, "username");
                             intent.putExtra("user", wrappedUser);
-                            context.startActivity(intent);
+                            context.startActivity(intent, options.toBundle());
                         }
                     });
 
@@ -246,8 +250,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         public void onClick(View view) {
                             Intent intent = new Intent(context, OthersProfileActivity.class);
                             Parcelable wrappedUser = Parcels.wrap(responseUser);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, (View) tvResponseUsername, "username");
                             intent.putExtra("user", wrappedUser);
-                            context.startActivity(intent);
+                            context.startActivity(intent, options.toBundle());
                         }
                     });
 

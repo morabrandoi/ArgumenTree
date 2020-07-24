@@ -239,7 +239,7 @@ Reddit-Like UI at least for the homepage. Would be able to browse through infint
    | claim          | String         | longer piece of text stating the claim     |
    | source         | String         | reference to source document               |
    | sourceQRef     | ref\<Post>     | reference to automated question post asking if source is valid |
-   | createdAt      | Timestamp      | time the post was created |
+   | createdAt      | Timestamp      | time the post was created                  |
    
    
    

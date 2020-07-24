@@ -25,6 +25,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:text="userNameHere"
+        android:transitionName="username"
         app:layout_constraintStart_toEndOf="@+id/ivOthersProfilePic"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="userNameHere" />
