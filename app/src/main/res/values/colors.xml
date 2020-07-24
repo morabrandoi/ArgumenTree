@@ -5,4 +5,5 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="ArgumenTreeGreen">#106000</color>
     <color name="ResponseSubBlock">#F1F7F1</color>
+    <color name="NavBarItemTint">#FFFFFF</color>
 </resources>
