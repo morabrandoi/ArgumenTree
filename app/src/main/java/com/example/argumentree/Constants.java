@@ -2,6 +2,7 @@ package com.example.argumentree;
 
 public class Constants {
     // For users document
+    public static final String FB_USERS = "users";
     public static final String USER_EMAIL = "email";
     public static final String USER_USERNAME = "username";
     public static final String USER_PROFILE_PIC = "profilePic";
@@ -16,6 +17,7 @@ public class Constants {
     public static final String QUESTION = "question";
     public static final String RESPONSE = "response";
     public static final String AUTHOR_REF = "authorRef";
+    public static final String FB_POSTS = "posts";
 
     // for QUESTION
     public static final String QUESTION_BODY = "body";
@@ -36,6 +38,9 @@ public class Constants {
     public static final String RESPONSE_SOURCE = "source";
     public static final String RESPONSE_SOURCE_QUESTION = "sourceQuestion";
     public static final String RESPONSE_CREATED_AT = POST_CREATED_AT;
+
+    // for intents on the client
+    public static final String PARENT_TYPE = "parentType";
 
     // Shared Preferences
     public static final String SP_CURRENT_USER = "com.example.argumentree.currentUser";
