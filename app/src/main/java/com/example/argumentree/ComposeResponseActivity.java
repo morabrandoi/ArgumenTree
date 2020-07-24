@@ -50,21 +50,21 @@ public class ComposeResponseActivity extends AppCompatActivity {
 
         // pulling info about parent from intent
         Intent passedIn = getIntent();
-        parentType = passedIn.getStringExtra("parentType");
+        parentType = passedIn.getStringExtra(Constants.PARENT_TYPE);
 
         // pulling info from user from SharedPrefs
         final User user = SharedPrefHelper.getUser(ComposeResponseActivity.this);
 
-        if (parentType.equals("question")) {
+        if (parentType.equals(Constants.QUESTION)) {
             // pull question object out of extras
 
-            Question question = Parcels.unwrap(passedIn.getParcelableExtra("question"));
+            Question question = Parcels.unwrap(passedIn.getParcelableExtra(Constants.QUESTION));
             questionRef = question.getDocID();
             parentRef = question.getDocID();
 
         }
-        else if (parentType.equals("response")){
-            Response response = Parcels.unwrap(passedIn.getParcelableExtra("response"));
+        else if (parentType.equals(Constants.RESPONSE)){
+            Response response = Parcels.unwrap(passedIn.getParcelableExtra(Constants.RESPONSE));
             questionRef = response.getQuestionRef();
             parentRef = response.getDocID();
 
@@ -103,7 +103,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 response.setSourceQRef(null); // TODO: implement auto question posting
                 response.setCreatedAt(new Date());
 
-                db.collection("posts")
+                db.collection(Constants.FB_POSTS)
                         .add(response)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
