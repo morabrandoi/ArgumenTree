@@ -134,7 +134,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ComposeResponseActivity.class);
-                        intent.putExtra("parentType", Constants.QUESTION);
+                        intent.putExtra(Constants.PARENT_TYPE, Constants.QUESTION);
                         Parcelable wrappedQuestion = Parcels.wrap(question);
                         intent.putExtra(Constants.QUESTION, wrappedQuestion);
                         context.startActivity(intent);
@@ -145,15 +145,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 iconQuestionTreeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // TODO: Fill functionality
-                        Toast.makeText(context, "Got to implement that tree view still", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        Intent intent = new Intent(context, TreeActivity.class);
 
-                tvQuestionUsername.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
+                        intent.putExtra(Constants.POST_TYPE, Constants.QUESTION);
+                        Parcelable wrappedResponse = Parcels.wrap(question);
+                        intent.putExtra(Constants.QUESTION, wrappedResponse);
+                        context.startActivity(intent);
                     }
                 });
             }
@@ -171,23 +168,39 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 tvResponseSource.setText(response.getSource());
                 tvResponseInteractions.setText(Integer.toString(response.getAgreements() + response.getDisagreements()));
 
+                // set Listeners
+                // response button
                 iconResponseReply.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ComposeResponseActivity.class);
 
-                        intent.putExtra("parentType", Constants.RESPONSE);
+                        intent.putExtra(Constants.PARENT_TYPE, Constants.RESPONSE);
                         Parcelable wrappedResponse = Parcels.wrap(response);
                         intent.putExtra(Constants.RESPONSE, wrappedResponse);
                         context.startActivity(intent);
                     }
                 });
+
+                // tree view button
+                iconResponseTreeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, TreeActivity.class);
+
+                        intent.putExtra(Constants.POST_TYPE, Constants.RESPONSE);
+                        Parcelable wrappedResponse = Parcels.wrap(response);
+                        intent.putExtra(Constants.RESPONSE, wrappedResponse);
+                        context.startActivity(intent);
+                    }
+                });
+
             }
 
             private void getResponseQuestionAndFill(String questionRef) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                db.collection("posts")
+                db.collection(Constants.FB_POSTS)
                         .document(questionRef)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -208,7 +221,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             private void getUserAndFill(String authorRef, final Post post){
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                db.collection("users")
+                db.collection(Constants.FB_USERS)
                         .document(authorRef)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -239,8 +252,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                             context.startActivity(intent, options.toBundle());
                         }
                     });
-
-
                 }
                 else{
                     responseUser = user;
