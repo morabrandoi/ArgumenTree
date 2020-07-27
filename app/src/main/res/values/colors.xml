@@ -6,4 +6,5 @@
     <color name="ArgumenTreeGreen">#106000</color>
     <color name="ResponseSubBlock">#F1F7F1</color>
     <color name="NavBarItemTint">#FFFFFF</color>
+    <color name="LighterArgumenTreeGreen">#A2BA9D</color>
 </resources>

@@ -38,7 +38,6 @@ import java.util.List;
 public class ComposeQuestionActivity extends AppCompatActivity {
     public static final String TAG = "ComposeQuestionActivity";
 
-
     // View member variables
     private EditText etQuestionBody;
     private ChipGroup chipGroup;
@@ -77,9 +76,10 @@ public class ComposeQuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final Chip chip = new Chip(ComposeQuestionActivity.this);
-                final String tagText = etAddChip.getText().toString();
+                final String tagText = etAddChip.getText().toString().toLowerCase();
                 allChips.add(tagText);
                 chip.setText(tagText);
+                etAddChip.setText(null);
                 chip.setCloseIconVisible(true);
 
                 //Adding click listener on close icon to remove tag from ChipGroup
