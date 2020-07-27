@@ -29,7 +29,7 @@ public class Constants {
 
     // for RESPONSE
     public static final String RESPONSE_PARENT = "parent";
-    public static final String RESPONSE_QUESTION_ROOT = "question_root";
+    public static final String RESPONSE_QUESTION_REF = "questionRef";
     public static final String RESPONSE_DESCENDANTS = "descendants";
     public static final String RESPONSE_AGREEMENTS = "agreements";
     public static final String RESPONSE_DISAGREEMENTS = "disagreements";

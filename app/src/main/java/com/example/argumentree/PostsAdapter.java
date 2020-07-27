@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +148,18 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     public void onClick(View view) {
                         Intent intent = new Intent(context, TreeActivity.class);
 
-                        intent.putExtra(Constants.POST_TYPE, Constants.QUESTION);
+                        Parcelable wrappedResponse = Parcels.wrap(question);
+                        intent.putExtra(Constants.QUESTION, wrappedResponse);
+                        context.startActivity(intent);
+                    }
+                });
+
+                // tree view button
+                iconResponseTreeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, TreeActivity.class);
+
                         Parcelable wrappedResponse = Parcels.wrap(question);
                         intent.putExtra(Constants.QUESTION, wrappedResponse);
                         context.startActivity(intent);
@@ -182,19 +194,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     }
                 });
 
-                // tree view button
-                iconResponseTreeView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, TreeActivity.class);
-
-                        intent.putExtra(Constants.POST_TYPE, Constants.RESPONSE);
-                        Parcelable wrappedResponse = Parcels.wrap(response);
-                        intent.putExtra(Constants.RESPONSE, wrappedResponse);
-                        context.startActivity(intent);
-                    }
-                });
-
             }
 
             private void getResponseQuestionAndFill(String questionRef) {
@@ -209,6 +208,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     Question question = document.toObject(Question.class);
+                                    question.setDocID(document.getId());
 
                                     bindQuestion(question);
 
