@@ -29,11 +29,8 @@ public class ComposeResponseActivity extends AppCompatActivity {
     public static final String TAG = "ComposeResponseActivity";
 
     // View member variables
-    private TextView tvBrief;
     private EditText etBrief;
-    private TextView tvClaim;
     private EditText etClaim;
-    private TextView tvSource;
     private EditText etSource;
     private Button btnPostResponse;
 
@@ -74,13 +71,10 @@ public class ComposeResponseActivity extends AppCompatActivity {
         }
 
         // Pulling view references in
-        tvBrief = findViewById(R.id.tvBrief);
-        etBrief = findViewById(R.id.etBrief);
-        tvClaim = findViewById(R.id.tvClaim);
-        etClaim = findViewById(R.id.etClaim);
-        tvSource = findViewById(R.id.tvResponseSource);
-        etSource = findViewById(R.id.etSource);
-        btnPostResponse = findViewById(R.id.btnPostResponse);
+        etBrief = findViewById( R.id.etBrief );
+        etClaim = findViewById( R.id.etClaim );
+        etSource = findViewById( R.id.etSource );
+        btnPostResponse = findViewById( R.id.btnPostResponse );
 
         // Setting up listeners
         btnPostResponse.setOnClickListener(new View.OnClickListener() {
@@ -91,17 +85,17 @@ public class ComposeResponseActivity extends AppCompatActivity {
 
                 Response response = new Response();
 
-                response.setDescendants(0);
-                response.setAgreements(0);
-                response.setDisagreements(0);
+                response.setDescendants( 0 );
+                response.setAgreements( 0 );
+                response.setDisagreements( 0 );
                 response.setAuthorRef( user.getAuthUserID() );
-                response.setParentRef(parentRef);
-                response.setQuestionRef(questionRef);
+                response.setParentRef( parentRef );
+                response.setQuestionRef( questionRef );
                 response.setBrief( etBrief.getText().toString() );
                 response.setClaim( etClaim.getText().toString() );
                 response.setSource( etSource.getText().toString() );
-                response.setSourceQRef(null); // TODO: implement auto question posting
-                response.setCreatedAt(new Date());
+                response.setSourceQRef( null ); // TODO: implement auto question posting
+                response.setCreatedAt( new Date() );
 
                 db.collection(Constants.FB_POSTS)
                         .add(response)
