@@ -41,6 +41,7 @@ public class Constants {
 
     // for intents on the client
     public static final String PARENT_TYPE = "parentType";
+    public static final String ALL_RESPONSES = "allResponses";
 
     // Shared Preferences
     public static final String SP_CURRENT_USER = "com.example.argumentree.currentUser";

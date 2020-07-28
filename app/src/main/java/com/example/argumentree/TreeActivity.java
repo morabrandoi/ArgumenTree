@@ -2,6 +2,7 @@ package com.example.argumentree;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.Response;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,14 +62,11 @@ public class TreeActivity extends AppCompatActivity {
         Parcelable wrappedQuestion = intent.getParcelableExtra(Constants.QUESTION);
         question = Parcels.unwrap(wrappedQuestion);
 
-        // This prevents a bug/crash where the layout dimension isn't set (I think)
         allResponses = new ArrayList<>();
         graph = new Graph();
         questionNode = new Node(question);
         graph.addNode(questionNode);
         setupAdapter(graph);
-
-//        constructTree(new ArrayList<Response>());
 
         queryAndConstructTree();
 
@@ -104,9 +103,6 @@ public class TreeActivity extends AppCompatActivity {
     }
 
     private void constructTree() {
-        // THE EXISTING EDGE MUST BE PUT FIRST
-//        graph.addEdge(questionNode, );
-
         Queue<Node> queue = new LinkedList<Node>();
         // Attach the first layer to the question root
         for (Response response : allResponses){
@@ -201,11 +197,17 @@ public class TreeActivity extends AppCompatActivity {
             }
         };
         graphView.setAdapter(adapter);
+
         graphView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Node currentNode = (Node) adapter.getItem(position);
-                Snackbar.make(graphView, "Clicked on " + currentNode.getData().toString(), Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(parent.getContext(), PostDetailActivity.class);
+                Parcelable wrappedPost = Parcels.wrap((Post) currentNode.getData());
+                Parcelable wrappedResponses = Parcels.wrap(allResponses);
+                intent.putExtra(Constants.FB_POSTS, wrappedPost);
+                intent.putExtra(Constants.ALL_RESPONSES, wrappedResponses);
+                startActivity(intent);
             }
         });
 
