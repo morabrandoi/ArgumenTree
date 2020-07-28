@@ -107,8 +107,6 @@ public class TreeActivity extends AppCompatActivity {
         // THE EXISTING EDGE MUST BE PUT FIRST
 //        graph.addEdge(questionNode, );
 
-        String connectToRef = question.getDocID();
-
         Queue<Node> queue = new LinkedList<Node>();
         // Attach the first layer to the question root
         for (Response response : allResponses){
@@ -119,7 +117,8 @@ public class TreeActivity extends AppCompatActivity {
                 graph.addEdge(questionNode, resNode);
             }
         }
-//
+
+        // main
         while (!queue.isEmpty()){
             Log.i(TAG, "queue size: " + queue.size());
             Node connectTo = queue.remove();
@@ -133,7 +132,6 @@ public class TreeActivity extends AppCompatActivity {
                     graph.addNode(curNode);
                     graph.addEdge(connectTo, curNode);
                 }
-
             }
         }
 
@@ -144,9 +142,9 @@ public class TreeActivity extends AppCompatActivity {
         graphView = findViewById(R.id.graph);
         // set the algorithm here
         final BuchheimWalkerConfiguration configuration = new BuchheimWalkerConfiguration.Builder()
-                .setSiblingSeparation(100)
-                .setLevelSeparation(300)
-                .setSubtreeSeparation(300)
+                .setSiblingSeparation(30)
+                .setLevelSeparation(200)
+                .setSubtreeSeparation(200)
                 .setOrientation(BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM)
                 .build();
         graphView.setLayout(new BuchheimWalkerAlgorithm(configuration));
@@ -191,8 +189,6 @@ public class TreeActivity extends AppCompatActivity {
                 else {
                     ((SimpleViewHolder) viewHolder).nodeText.setText("dummy Data");
                 }
-
-
             }
 
             class SimpleViewHolder extends GraphView.ViewHolder {
