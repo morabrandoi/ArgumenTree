@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,6 +64,8 @@ public class HomeFragment extends Fragment {
         postsAdapter = new PostsAdapter(getContext(), homePosts);
         rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
         rvHome.setAdapter(postsAdapter);
+        rvHome.addItemDecoration(new DividerItemDecoration(rvHome.getContext(), DividerItemDecoration.VERTICAL));
+
 
         // fill view with data
         fillContributionsFromFirestore();
