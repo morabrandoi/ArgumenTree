@@ -36,7 +36,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
 
     // Information about parent to soon-to-be-created child
     private String parentType; // Can either be "response" or "question"
-    private String questionRef; // if parent is question then parentType == questionRoot
+    private String questionRef; // if parent is question then parentRef == questionRoot
     private String parentRef;
 
 
@@ -52,19 +52,16 @@ public class ComposeResponseActivity extends AppCompatActivity {
         // pulling info from user from SharedPrefs
         final User user = SharedPrefHelper.getUser(ComposeResponseActivity.this);
 
+        // pulling appropriate Response or Question object from intent
         if (parentType.equals(Constants.QUESTION)) {
-            // pull question object out of extras
-
             Question question = Parcels.unwrap(passedIn.getParcelableExtra(Constants.QUESTION));
             questionRef = question.getDocID();
             parentRef = question.getDocID();
-
         }
         else if (parentType.equals(Constants.RESPONSE)){
             Response response = Parcels.unwrap(passedIn.getParcelableExtra(Constants.RESPONSE));
             questionRef = response.getQuestionRef();
             parentRef = response.getDocID();
-
         }
         else{
             throw new RuntimeException("The question type passed in to ComposeResponseActivity is invalid");

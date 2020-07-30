@@ -30,16 +30,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
 
-    // UI variables
     private RecyclerView rvHome;
-
-    // Model variables
     private List<Post> homePosts;
     private PostsAdapter postsAdapter;
 
@@ -66,24 +60,22 @@ public class HomeFragment extends Fragment {
         rvHome.setAdapter(postsAdapter);
         rvHome.addItemDecoration(new DividerItemDecoration(rvHome.getContext(), DividerItemDecoration.VERTICAL));
 
-
         // fill view with data
         fillContributionsFromFirestore();
-
     }
 
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection("posts")
+        Query query = db.collection(Constants.FB_POSTS)
                 .orderBy(Constants.POST_CREATED_AT, Query.Direction.DESCENDING);
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        // check which kind it is
+
+                        // parse document depending on whether post is question or response
                         String postType = document.getString(Constants.POST_TYPE);
                         if (postType.equals(Constants.QUESTION)) {
                             Question question = document.toObject(Question.class);

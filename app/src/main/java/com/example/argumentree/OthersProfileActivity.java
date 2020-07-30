@@ -98,7 +98,7 @@ public class OthersProfileActivity extends AppCompatActivity {
 
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection("posts")
+        Query query = db.collection(Constants.FB_POSTS)
                 .orderBy(Constants.POST_CREATED_AT, Query.Direction.DESCENDING)
                 .whereEqualTo(Constants.AUTHOR_REF, user.getAuthUserID());
 
@@ -106,15 +106,15 @@ public class OthersProfileActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        // check which kind it is
+
+                        // cast incoming post as Question or Response
                         String postType = document.getString(Constants.POST_TYPE);
                         if (postType.equals(Constants.QUESTION)) {
                             Question question = document.toObject(Question.class);
                             question.setDocID(document.getId());
                             othersPosts.add(question);
-                        } else if (postType.equals("response")) {
+                        } else if (postType.equals( Constants.RESPONSE )) {
                             Response response = document.toObject(Response.class);
                             response.setDocID(document.getId());
                             othersPosts.add(response);

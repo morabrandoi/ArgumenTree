@@ -41,12 +41,11 @@ import de.blox.graphview.tree.BuchheimWalkerConfiguration;
 public class TreeActivity extends AppCompatActivity {
     public static final String TAG = "TreeActivity";
 
-//    private Node currentNode;
     // UI Variables
     protected GraphView graphView;
     protected GraphAdapter adapter;
 
-    // Graph variables
+    // Model variables
     private ArrayList<Response> allResponses;
     private Question question;
     private Node questionNode;
@@ -62,9 +61,11 @@ public class TreeActivity extends AppCompatActivity {
         Parcelable wrappedQuestion = intent.getParcelableExtra(Constants.QUESTION);
         question = Parcels.unwrap(wrappedQuestion);
 
+        // Instantiating model variables
         allResponses = new ArrayList<>();
         graph = new Graph();
         questionNode = new Node(question);
+
         graph.addNode(questionNode);
         setupAdapter(graph);
 
@@ -84,14 +85,10 @@ public class TreeActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
                 if (task.isSuccessful()){
-                    Log.i(TAG, "task is successful");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-
                         Response response = document.toObject(Response.class);
                         response.setDocID(document.getId());
-
                         allResponses.add(response);
-                        Log.i(TAG, "one doc received: " + response.getClaim());
                     }
                     constructTree();
                 }
@@ -114,14 +111,12 @@ public class TreeActivity extends AppCompatActivity {
             }
         }
 
-        // main
+        // attaching response node to correct parent response nodes
         while (!queue.isEmpty()){
-            Log.i(TAG, "queue size: " + queue.size());
             Node connectTo = queue.remove();
             Response connectToResponse =  ( (Response) connectTo.getData() );
 
             for (Response response: allResponses){
-                Log.i(TAG, "response Parent : " + response.getBrief() + ", connectDocID: " + connectToResponse.getBrief());
                 if (response.getParentRef().equals(connectToResponse.getDocID()) ){
                     Node curNode = new Node(response);
                     queue.add(curNode);
@@ -174,16 +169,14 @@ public class TreeActivity extends AppCompatActivity {
                 Object nodePost = curNode.getData();
 
                 if (curNode.getData() instanceof Question){
-                    Log.i(TAG, "binding question: " + question.getBody());
-                    ((SimpleViewHolder) viewHolder).nodeText.setText(question.getBody());
+                    ((SimpleViewHolder) viewHolder).nodeText.setText( question.getBody() );
                 }
                 else if (curNode.getData() instanceof Response){
-
                     Response response = (Response) nodePost;
                     ((SimpleViewHolder) viewHolder).nodeText.setText(response.getBrief());
                 }
                 else {
-                    ((SimpleViewHolder) viewHolder).nodeText.setText("dummy Data");
+                    throw new RuntimeException("When binding node view, data passed in is not response or question");
                 }
             }
 
@@ -202,6 +195,8 @@ public class TreeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Node currentNode = (Node) adapter.getItem(position);
+
+                // start activity into post detail view
                 Intent intent = new Intent(parent.getContext(), PostDetailActivity.class);
                 Parcelable wrappedPost = Parcels.wrap((Post) currentNode.getData());
                 Parcelable wrappedResponses = Parcels.wrap(allResponses);

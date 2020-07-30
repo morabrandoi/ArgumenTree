@@ -37,12 +37,14 @@ import java.util.Date;
 public class SignUpFragment extends Fragment {
     public static final String TAG = "SignUpFragment";
 
+    // UI elements
     private Button btnSignUp;
     private Button btnLogInInstead;
     private EditText etEmail;
     private EditText etUsername;
     private EditText etPassword;
 
+    // Firebase
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
@@ -62,41 +64,44 @@ public class SignUpFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // pulling in UI elements
         btnSignUp = view.findViewById(R.id.btnSignUp);
         btnLogInInstead = view.findViewById(R.id.btnLogInInstead);
         etEmail = view.findViewById(R.id.etSignUpEmail);
         etUsername = view.findViewById(R.id.etSignUpUsername);
         etPassword = view.findViewById(R.id.etSignUpPassword);
 
+        // instantiate firebase objects
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        // set on click listeners
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
 
+                // TODO: Parse error and update UI accordingly (e.g. weakpassword -> Toast to change password)
+                // TODO: Stretch: Implement that the email and username must be unique
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = auth.getCurrentUser();
-                            updateUI(user);
+                            addUserToFirestore(user.getUid());
+                            getActivity().finish();
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            // TODO: Parse error and update UI accordingly (e.g. weakpassword -> Toast to change password)
+                            Log.e(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            etPassword.setText(null);
                         }
 
                     }
                 });
             }
         });
+
 
         btnLogInInstead.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,20 +114,8 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user == null){ // Auth failed
-            etPassword.setText(null);
-
-        // Auth was successful
-        } else {
-            addUserToFirestore(user.getUid());
-            getActivity().finish();
-        }
-    }
-
+    // creating a firestore user object
     private void addUserToFirestore(String uid) {
-
-        // TODO: Stretch: Implement that the email and username must be unique
         // Assigning fields of the user object
         String email = etEmail.getText().toString();
         String username = etUsername.getText().toString();

@@ -37,6 +37,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
     public static final String TAG = "SearchFragment";
 
+    // UI elements
     private RecyclerView rvSearch;
     private SearchView searchView;
 
@@ -63,7 +64,6 @@ public class SearchFragment extends Fragment {
         rvSearch = view.findViewById(R.id.rvSearch);
         searchView = view.findViewById(R.id.searchView);
 
-
         // Setting up recyclerView
         searchedPosts = new ArrayList<Post>();
         postsAdapter = new PostsAdapter(getContext(), searchedPosts);
@@ -82,13 +82,12 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
-                if (s.indexOf("/tags:")  == 0){
+                if ( s.indexOf("/tags:") == 0 ) {
                     fillPostsByTag(s);
                 }
                 else{
                     fillPostsByString(s);
                 }
-
                 return false;
             }
 
@@ -100,10 +99,11 @@ public class SearchFragment extends Fragment {
     }
     // TODO: Fill in search by tag as well as regular string match search
     private void fillPostsByTag(String queryString) {
-        // splits query string into tags
+        // splits query string into list of tags
         List<String> tags = new ArrayList<String>(Arrays.asList((queryString.substring(6)).split("\\s*,\\s*")));
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection(Constants.FB_POSTS).whereArrayContainsAny("tags", tags);
+        Query query = db.collection(Constants.FB_POSTS).whereArrayContainsAny(Constants.QUESTION_TAGS, tags);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -130,10 +130,10 @@ public class SearchFragment extends Fragment {
         });
     }
 
+    // queries firestore for an exact match on the question body as the string
     private void fillPostsByString(String queryString) {
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection(Constants.FB_POSTS).whereEqualTo("body", queryString);
+        Query query = db.collection(Constants.FB_POSTS).whereEqualTo(Constants.QUESTION_BODY, queryString);
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

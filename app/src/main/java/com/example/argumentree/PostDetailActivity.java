@@ -21,7 +21,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private Post post;
 
-    // Focus post
+    // single post to focus
     private RecyclerView rvDetails;
     private List<Post> singleFocusPost;
     private PostsAdapter singlePostAdapter;
@@ -54,13 +54,11 @@ public class PostDetailActivity extends AppCompatActivity {
         rvDetails.setAdapter(singlePostAdapter);
         rvDetails.addItemDecoration(new DividerItemDecoration(rvDetails.getContext(), DividerItemDecoration.VERTICAL));
 
+        // setting up recycler view for related posts
         rvResponses = findViewById(R.id.rvResponses);
-//        responsePosts = new ArrayList<Post>();
         responseAdapter = new PostsAdapter(this, responsePosts);
         rvResponses.setLayoutManager(new LinearLayoutManager(this));
         rvResponses.setAdapter(responseAdapter);
         rvResponses.addItemDecoration(new DividerItemDecoration(rvResponses.getContext(), DividerItemDecoration.VERTICAL));
-
-
     }
 }

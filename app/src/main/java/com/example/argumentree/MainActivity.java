@@ -31,16 +31,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
-    final FragmentManager fragmentManager = getSupportFragmentManager();
-
+    // UI variables
     private BottomNavigationView bottomNavigationView;
+    final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Ensure if user is signed in then user object is in shared prefs
+
+        // Ensure that user is signed in
         ensureUserInSharedPref();
+
         // Pulling references View elements
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 
+    // if user is not in sharedPref, pull user in and add to shared Pref
     private void ensureUserInSharedPref() {
         boolean hasUser = SharedPrefHelper.hasUserIn(this);
         if (!hasUser && FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
             String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            db.collection("users")
+            db.collection(Constants.FB_USERS)
                     .document(currentUserUID)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

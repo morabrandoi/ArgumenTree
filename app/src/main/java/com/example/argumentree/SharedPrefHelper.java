@@ -11,19 +11,17 @@ public class SharedPrefHelper {
     public static final String TAG = "SharedPrefHelper";
 
     public static User getUser(Context context){
-        Log.i(TAG, "Pull user from shared Pref");
         SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_CURRENT_USER, Context.MODE_PRIVATE);
 
         Gson gson = new Gson();
         String json = sharedPref.getString(Constants.SP_CURRENT_USER, null);
         if (json == null){
-            Log.e(TAG, "\n\nSHARED PREF USER IS NULL\n\n");
+            Log.e(TAG, "Shared pref user is null");
         }
         return gson.fromJson(json, User.class);
     }
 
     public static void putUserIn(Context context, User user){
-        Log.i(TAG, "Put user in sharedPref");
         SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_CURRENT_USER, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         Gson gson = new Gson();
@@ -36,8 +34,6 @@ public class SharedPrefHelper {
     public static boolean hasUserIn(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_CURRENT_USER, Context.MODE_PRIVATE);
         String json = sharedPref.getString(Constants.SP_CURRENT_USER, null);
-        Log.i(TAG, "Checked if user in shared pref: " + (json != null));
-        Log.i(TAG, "It is: " +json);
         return (json != null);
     }
 }

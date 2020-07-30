@@ -32,6 +32,7 @@ import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
         private static final String TAG = "PostsAdapter";
+
         private Context context;
         private List<Post> loadedPosts;
 
@@ -196,6 +197,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
             }
 
+            // get question object relating to response object
             private void getResponseQuestionAndFill(String questionRef) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -217,7 +219,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         });
             }
 
-            // Queries for user of post and fills in username information from the result
+            // Queries for user of post and passes user and post to binding function
             private void getUserAndFill(String authorRef, final Post post){
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -238,6 +240,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         });
             }
 
+            // binding function for information received from getUserAndFill
             private void fillUserDependantInfo(User user, final Post post){
                 if (post instanceof Question){
                     questionUser = user;

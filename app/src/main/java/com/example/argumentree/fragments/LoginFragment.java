@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  */
 public class LoginFragment extends Fragment {
     public static final String TAG = "LoginFragment";
+
     private Button btnLogin;
     private EditText etEmail;
     private EditText etPassword;
@@ -55,10 +56,13 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // pulling in view references
         btnLogin = view.findViewById(R.id.btnLogIn);
         etEmail = view.findViewById(R.id.etLoginEmail);
         etPassword = view.findViewById(R.id.etLoginPassword);
 
+        // Setting listeners on view elements
+        //
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,17 +73,13 @@ public class LoginFragment extends Fragment {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        // TODO: Rename "updateUI" function to be more descriptive, or delete entirely.
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = auth.getCurrentUser();
-                            getUserFromFirestore();
-                            getActivity().finish();                            // Storing username in shared prefs
+                            // Getting user object from firestore and storing it in shared prefs
+                            storeFirestoreUser();
+                            getActivity().finish();
 
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.e(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
 
                         }
@@ -91,14 +91,15 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void getUserFromFirestore() {
+    // pulls full user information from firestore and stores it in shared prefs
+    private void storeFirestoreUser() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Parent activity
         final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
-        db.collection("users")
+        db.collection(Constants.FB_USERS)
                 .document(currentUserUID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -115,6 +116,3 @@ public class LoginFragment extends Fragment {
     }
 
 }
-
-//
-

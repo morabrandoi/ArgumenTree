@@ -88,7 +88,7 @@ public class MyProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Pulling all view elements in
+        // Getting references to view elements
         btnLogOut = view.findViewById(R.id.btnLogOut);
         ivProfilePageProfilePic = view.findViewById(R.id.ivProfilePageProfilePic);
         tvProfilePageUsername = view.findViewById(R.id.tvProfilePageUsername);
@@ -98,20 +98,20 @@ public class MyProfileFragment extends Fragment {
         tvHasContributedTo = view.findViewById(R.id.tvHasContributedTo);
         rvContributions = view.findViewById(R.id.rvContributions);
 
+        // Set up user-dependant information
+        user = SharedPrefHelper.getUser( getActivity() );
+        tvProfilePageUsername.setText( user.getUsername() );
+        tvProfilePageBio.setText( user.getBio() );
+        if (user.getProfilePic() != null){
+            Glide.with(this).load( user.getProfilePic() ).into(ivProfilePageProfilePic);
+        }
+
         // Setting up recycler view
         ownPosts = new ArrayList<Post>();
         postsAdapter = new PostsAdapter(getContext(), ownPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvContributions.setAdapter(postsAdapter);
-
-        // fill view with data
-        user = fillUserInfoFromSharedPrefs();
         fillContributionsFromFirestore();
-
-        if (user.getProfilePic() != null){
-            Glide.with(this).load( user.getProfilePic() ).into(ivProfilePageProfilePic);
-        }
-
 
         // Setting listeners
 
@@ -140,6 +140,7 @@ public class MyProfileFragment extends Fragment {
             }
         });
 
+        //
         ivProfilePageProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,7 +200,7 @@ public class MyProfileFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        db.collection("users")
+        db.collection(Constants.FB_USERS)
                 .document(user.getUid())
                 .update(Constants.USER_PROFILE_PIC, uri.toString())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -221,18 +222,9 @@ public class MyProfileFragment extends Fragment {
         SharedPrefHelper.putUserIn(getContext(), user);
     }
 
-    private User fillUserInfoFromSharedPrefs() {
-        // Getting User object from shared prefs
-        User user = SharedPrefHelper.getUser(getActivity());
-        tvProfilePageUsername.setText(user.getUsername());
-        tvProfilePageBio.setText(user.getBio());
-
-        return user;
-    }
-
     private void fillContributionsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection("posts")
+        Query query = db.collection(Constants.FB_POSTS)
                 .orderBy(Constants.POST_CREATED_AT, Query.Direction.DESCENDING)
                 .whereEqualTo(Constants.AUTHOR_REF, user.getAuthUserID());
 
@@ -240,15 +232,14 @@ public class MyProfileFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "successful pull of posts");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        // check which kind it is
+                        // split casting of document depending on what kind of post it is
                         String postType = document.getString(Constants.POST_TYPE);
                         if (postType.equals(Constants.QUESTION)) {
                             Question question = document.toObject(Question.class);
                             question.setDocID(document.getId());
                             ownPosts.add(question);
-                        } else if (postType.equals("response")) {
+                        } else if (postType.equals(Constants.RESPONSE)) {
                             Response response = document.toObject(Response.class);
                             response.setDocID(document.getId());
                             ownPosts.add(response);

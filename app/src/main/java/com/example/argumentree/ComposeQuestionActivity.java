@@ -54,7 +54,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_question);
 
-        // set transition
+        // set screen transition
         Transition enterTransition = TransitionInflater.from(this).inflateTransition(R.transition.slide_up);
         Transition exitTransition = TransitionInflater.from(this).inflateTransition(R.transition.slide_down);
         getWindow().setEnterTransition(enterTransition);
@@ -70,8 +70,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
         ivAddChip = findViewById(R.id.ivAddChip);
         switchRelaxedMode = findViewById(R.id.switchRelaxedMode);
 
-        // Setting up listeners
-        // Add chip
+        // Add chip click listener
         ivAddChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,7 +94,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
             }
         });
 
-        // Submit Question
+        // Submit Question click listener
         btnSubmitQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +112,7 @@ public class ComposeQuestionActivity extends AppCompatActivity {
 
                 Question question = new Question(body, tags, authorRef, mediaRef, descendants, relaxed, createdAt);
 
-                db.collection("posts")
+                db.collection(Constants.FB_POSTS)
                         .add(question)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
@@ -132,8 +131,5 @@ public class ComposeQuestionActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
-
-
 }
