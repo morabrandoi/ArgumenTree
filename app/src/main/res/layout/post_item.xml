@@ -9,13 +9,12 @@
 
     <TextView
         android:id="@+id/tvQuestionBody"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Sample question here why is there never square icecream cones?" />
@@ -45,19 +44,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/ResponseSubBlock"
+        android:background="@drawable/rounded_corner"
         android:paddingStart="16dp"
         android:paddingLeft="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
-        android:paddingBottom="4dp"
+        android:paddingBottom="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuestionUsername"
         tools:visibility="visible">
 
         <TextView
@@ -75,18 +75,18 @@
             android:id="@+id/tvResponseClaim"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvResponseBrief"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseUsername"
             tools:text="This is the claim of the post and might be somewhat lengthy" />
 
         <TextView
             android:id="@+id/tvResponseSource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:autoLink="web"
             android:linksClickable="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -148,12 +148,12 @@
         <TextView
             android:id="@+id/tvResponseUsername"
             android:layout_width="wrap_content"
-            android:transitionName="username"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="2dp"
             android:textSize="12sp"
+            android:transitionName="username"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconDisagree"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseBrief"
             tools:text="UsernameHere" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -171,12 +171,12 @@
         android:id="@+id/tvQuestionUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:transitionName="username"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:textSize="12sp"
+        android:transitionName="username"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestionDescendants"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuestionBody"
         tools:text="UsernameHere" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
