@@ -16,8 +16,11 @@ import com.example.argumentree.models.Response;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import org.parceler.Parcels;
 
@@ -93,22 +96,29 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 response.setSourceQRef( null ); // TODO: implement auto question posting
                 response.setCreatedAt( new Date() );
 
-                db.collection(Constants.FB_POSTS)
-                        .add(response)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.i(TAG, "Successfully posted a response!");
-                                Toast.makeText(ComposeResponseActivity.this, "Posted!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "Error adding document", e);
-                                Toast.makeText(ComposeResponseActivity.this, "Something went wrong posting question", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                WriteBatch batch = db.batch();
+
+                // create new response object
+                DocumentReference generatedDocID = db.collection(Constants.FB_POSTS).document();
+                batch.set(generatedDocID, response);
+
+                // update descendants on question
+                DocumentReference questionDoc = db.collection( Constants.FB_POSTS ).document( questionRef );
+                batch.update( questionDoc, Constants.QUESTION_DESCENDANTS, FieldValue.increment( 1 ));
+
+                batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "Successfully posted a response!");
+                        Toast.makeText(ComposeResponseActivity.this, "Posted!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                        Toast.makeText(ComposeResponseActivity.this, "Something went wrong posting question", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 finish();
             }
         });

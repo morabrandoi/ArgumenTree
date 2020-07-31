@@ -2,12 +2,10 @@ package com.example.argumentree;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,11 +167,12 @@ public class TreeActivity extends AppCompatActivity {
                 Object nodePost = curNode.getData();
 
                 if (curNode.getData() instanceof Question){
-                    ((SimpleViewHolder) viewHolder).nodeText.setText( question.getBody() );
+                    ((SimpleViewHolder) viewHolder).nodeBrief.setText( question.getBody() );
                 }
                 else if (curNode.getData() instanceof Response){
                     Response response = (Response) nodePost;
-                    ((SimpleViewHolder) viewHolder).nodeText.setText(response.getBrief());
+                    ((SimpleViewHolder) viewHolder).nodeBrief.setText( response.getBrief() );
+                    ((SimpleViewHolder) viewHolder).nodeClaim.setText( response.getClaim() );
                 }
                 else {
                     throw new RuntimeException("When binding node view, data passed in is not response or question");
@@ -181,11 +180,13 @@ public class TreeActivity extends AppCompatActivity {
             }
 
             class SimpleViewHolder extends GraphView.ViewHolder {
-                TextView nodeText;
+                TextView nodeBrief;
+                TextView nodeClaim;
 
                 SimpleViewHolder(View itemView) {
                     super(itemView);
-                    nodeText = itemView.findViewById(R.id.nodeText);
+                    nodeBrief = itemView.findViewById(R.id.nodeBrief);
+                    nodeClaim = itemView.findViewById(R.id.nodeClaim);
                 }
             }
         };
