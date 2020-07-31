@@ -112,6 +112,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             User responseUser;
             String voteState = null;
             DocumentReference voteDocument = null;
+            Boolean middleOfBatchWrite = false;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -136,6 +137,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 iconDislike = itemView.findViewById(R.id.iconDislike);
             }
 
+            // Read in Vote state on load so each post can have proper liking
             private void assignVoteState(final Response response) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -180,11 +182,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                                 else{
                                     Log.e(TAG, "Querying for vote unsuccessful");
                                 }
-                                updateVoteIcons(voteState);
+                                updateVoteIcons();
                             }
                         });
             }
 
+            // Binds a question post to the view
             public void bindQuestion(final Question question) {
                 // Fill username
                 getUserAndFill(question.getAuthorRef(), question);
@@ -229,7 +232,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 });
             }
 
-            // Necessary because binding the response requires a query for the parent
+            // Binds a response post to the view
             public void bindResponse(final Response response) {
                 // fill username
                 getUserAndFill(response.getAuthorRef(), response);
@@ -288,25 +291,33 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 });
             }
 
+            // Contains the logic for maintaining vote state as well as pushing updates to firestore
             private void handleVote(final Response response, final String direction) {
                 final FirebaseAuth auth = FirebaseAuth.getInstance();
                 final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                // Don't do anything if not signed in
+                // Conditions where handleVote should not be executed
                 if (auth.getCurrentUser() == null){
                     Log.e(TAG, "User not signed in so skipped doing anything on click");
                     return;
                 }
-                // Don't do anything if query hasn't finished
                 if (voteState == null){
                     Log.i(TAG, "VoteState is null");
                     return ;
                 }
+                if (middleOfBatchWrite){
+                    Log.i(TAG, "Clicked in middle of batch write");
+                    return ;
+                }
+
+                middleOfBatchWrite = true;
 
                 final DocumentReference prevVoteDoc = voteDocument;
                 final String prevVoteState = voteState;
-
+                final int prevLikes = Integer.parseInt( tvResponseLikes.getText().toString() );
+                final int prevDislikes = Integer.parseInt( tvResponseDislikes.getText().toString() );
                 WriteBatch batch = db.batch();
+
                 Log.i(TAG, "voteState before: " + voteState);
                 if ( direction.equals( Constants.VOTE_LIKE ) ) {
                     if ( voteState.equals( Constants.VOTE_STATE_UNVOTED ) ) {
@@ -318,9 +329,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
                         batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( 1 ) );
 
-                        // updating views vote document
+                        // updating vote document and state
                         voteDocument = generatedDocID;
                         voteState = Constants.VOTE_STATE_LIKED;
+
+                        // updating view
+                        tvResponseLikes.setText( Integer.toString( prevLikes + 1) );
                     }
                     else if ( voteState.equals( Constants.VOTE_STATE_LIKED ) ) {
                         // delete voteDoc
@@ -328,11 +342,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
                         // decrement response like counter by 1
                         DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
-                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1) );
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1 ) );
 
                         // updating views vote document
                         voteDocument = null;
                         voteState = Constants.VOTE_STATE_UNVOTED;
+
+                        // updating view
+                        tvResponseLikes.setText( Integer.toString( prevLikes - 1) );
                     }
                     else if ( voteState.equals( Constants.VOTE_STATE_DISLIKED ) ) {
                         // update doc to be dislike
@@ -340,11 +357,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
                         DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
                         // decrement response like by 1
-                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1) );
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( 1) );
                         // increment response dislike by 1
-                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( 1) );
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( -1 ) );
 
                         voteState = Constants.VOTE_STATE_LIKED;
+
+                        // updating view
+                        tvResponseLikes.setText( Integer.toString( prevLikes + 1) );
+                        tvResponseDislikes.setText( Integer.toString( prevDislikes - 1) );
                     }
                 }
                 else if ( direction.equals( Constants.VOTE_DISLIKE ) ) {
@@ -361,6 +382,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         voteDocument = generatedDocID;
                         voteState = Constants.VOTE_STATE_DISLIKED;
 
+                        // updating view
+                        tvResponseDislikes.setText( Integer.toString( prevDislikes + 1) );
+
                     }
                     else if ( voteState.equals( Constants.VOTE_STATE_LIKED ) ) {
                         // update doc to be like instead of dislike
@@ -368,11 +392,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
                         DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
                         // decrement dislike
-                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( -1) );
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( 1 ) );
                         // increment like
-                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( 1) );
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1 ) );
 
                         voteState = Constants.VOTE_STATE_DISLIKED;
+
+                        // updating view
+                        tvResponseLikes.setText( Integer.toString( prevLikes - 1) );
+                        tvResponseDislikes.setText( Integer.toString( prevDislikes + 1) );
                     }
                     else if ( voteState.equals( Constants.VOTE_STATE_DISLIKED ) ) {
                         // delete voteDoc
@@ -385,28 +413,37 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         // updating views vote document
                         voteDocument = null;
                         voteState = Constants.VOTE_STATE_UNVOTED;
+
+                        // updating view
+                        tvResponseDislikes.setText( Integer.toString( prevDislikes - 1) );
                     }
                 }
-                updateVoteIcons(voteState);
+                updateVoteIcons();
                 batch.commit()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.i(TAG, "Success, voteState is now: " + voteState);
+                                middleOfBatchWrite = false;
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                middleOfBatchWrite = false;
                                 voteDocument = prevVoteDoc;
                                 voteState = prevVoteState;
-                                updateVoteIcons(voteState);
+                                updateVoteIcons();
+                                // updating view
+                                tvResponseLikes.setText( Integer.toString( prevLikes ) );
+                                tvResponseDislikes.setText( Integer.toString( prevDislikes ) );
                                 Log.e(TAG, "failure in transaction", e);
                             }
                         });
             }
 
-            private void updateVoteIcons(String newState) {
+            // helper for handleVote which manages the UI changes related to voting
+            private void updateVoteIcons() {
                 switch (voteState){
                     case Constants.VOTE_STATE_DISLIKED:
                         iconLike.setImageResource(R.drawable.ic_thumbs_up);
@@ -419,6 +456,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     case Constants.VOTE_STATE_UNVOTED:
                         iconLike.setImageResource(R.drawable.ic_thumbs_up);
                         iconDislike.setImageResource(R.drawable.ic_thumbs_down);
+                        break;
+                    default:
                         break;
                 }
             }
