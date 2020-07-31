@@ -75,7 +75,7 @@ public class SearchFragment extends Fragment {
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "On Search click", Snackbar.LENGTH_SHORT).show();
+
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -133,13 +133,39 @@ public class SearchFragment extends Fragment {
     // queries firestore for an exact match on the question body as the string
     private void fillPostsByString(String queryString) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection(Constants.FB_POSTS).whereEqualTo(Constants.QUESTION_BODY, queryString);
 
+        // Getting all posts by question wording
+        Query query = db.collection(Constants.FB_POSTS).whereEqualTo(Constants.QUESTION_BODY, queryString);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "successful pull of posts");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        // check which kind it is
+                        String postType = document.getString(Constants.POST_TYPE);
+                        if (postType.equals(Constants.QUESTION)) {
+                            Question question = document.toObject(Question.class);
+                            question.setDocID(document.getId());
+                            searchedPosts.add(question);
+                        } else if (postType.equals(Constants.RESPONSE)) {
+                            Response response = document.toObject(Response.class);
+                            response.setDocID(document.getId());
+                            searchedPosts.add(response);
+                        }
+                    }
+                    postsAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+
+        Query queryBriefs = db.collection(Constants.FB_POSTS).whereEqualTo(Constants.RESPONSE_BRIEF, queryString);
+        queryBriefs.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         // check which kind it is
                         String postType = document.getString(Constants.POST_TYPE);
