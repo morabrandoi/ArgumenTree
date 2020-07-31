@@ -110,40 +110,51 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/iconResponseTreeView"
-            app:layout_constraintStart_toStartOf="@+id/iconAgree"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
             app:srcCompat="@android:drawable/ic_menu_send" />
 
         <TextView
-            android:id="@+id/tvResponseInteractions"
+            android:id="@+id/tvResponseLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@+id/iconAgree"
+            android:maxLength="4"
+            app:layout_constraintStart_toEndOf="@+id/iconLike"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            tools:text="23k" />
+
+        <TextView
+            android:id="@+id/tvResponseDislikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:maxLength="4"
+            app:layout_constraintStart_toEndOf="@+id/iconDislike"
             app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
             tools:text="23k" />
 
         <ImageView
-            android:id="@+id/iconAgree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="10dp"
+            android:id="@+id/iconLike"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
-            app:srcCompat="@android:drawable/arrow_up_float" />
+            app:srcCompat="@drawable/ic_thumbs_up" />
 
         <ImageView
-            android:id="@+id/iconDisagree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconAgree"
-            app:srcCompat="@android:drawable/arrow_down_float" />
+            android:id="@+id/iconDislike"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/tvResponseLikes"
+            app:layout_constraintTop_toBottomOf="@+id/tvResponseSource"
+            app:srcCompat="@drawable/ic_thumbs_down" />
 
         <TextView
             android:id="@+id/tvResponseUsername"

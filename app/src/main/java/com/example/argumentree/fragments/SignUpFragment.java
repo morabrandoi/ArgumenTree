@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.argumentree.Constants;
 import com.example.argumentree.R;
 import com.example.argumentree.SharedPrefHelper;
 import com.example.argumentree.UserAuthActivity;
@@ -131,7 +132,7 @@ public class SignUpFragment extends Fragment {
         final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
 
         // Posting user object to firestore and storing user object in shared prefs when successful
-        db.collection("users").document(uid)
+        db.collection(Constants.FB_USERS).document(uid)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

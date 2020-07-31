@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.argumentree.models.Question;
@@ -83,8 +82,8 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 Response response = new Response();
 
                 response.setDescendants( 0 );
-                response.setAgreements( 0 );
-                response.setDisagreements( 0 );
+                response.setLikes( 0 );
+                response.setDislikes( 0 );
                 response.setAuthorRef( user.getAuthUserID() );
                 response.setParentRef( parentRef );
                 response.setQuestionRef( questionRef );

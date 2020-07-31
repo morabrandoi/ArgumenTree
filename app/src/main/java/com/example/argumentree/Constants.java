@@ -31,13 +31,24 @@ public class Constants {
     public static final String RESPONSE_PARENT = "parent";
     public static final String RESPONSE_QUESTION_REF = "questionRef";
     public static final String RESPONSE_DESCENDANTS = "descendants";
-    public static final String RESPONSE_AGREEMENTS = "agreements";
-    public static final String RESPONSE_DISAGREEMENTS = "disagreements";
-    public static final String RESPONSE_TITLE = "title";
+    public static final String RESPONSE_LIKES = "likes";
+    public static final String RESPONSE_DISLIKES = "dislikes";
+    public static final String RESPONSE_BRIEF = "brief";
     public static final String RESPONSE_CLAIM = "claim";
     public static final String RESPONSE_SOURCE = "source";
     public static final String RESPONSE_SOURCE_QUESTION = "sourceQuestion";
     public static final String RESPONSE_CREATED_AT = POST_CREATED_AT;
+
+    // for votes
+    public static final String FB_VOTES = "votes";
+    public static final String VOTE_LIKE = "like";
+    public static final String VOTE_DISLIKE = "dislike";
+    public static final String VOTE_STATE_UNVOTED = "unvoted";
+    public static final String VOTE_STATE_LIKED = "liked";
+    public static final String VOTE_STATE_DISLIKED = "disliked";
+    public static final String VOTE_RESPONSE_REF = "responseRef";
+    public static final String VOTE_USER_REF = "userRef";
+    public static final String VOTE_DIRECTION = "direction";
 
     // for intents on the client
     public static final String PARENT_TYPE = "parentType";

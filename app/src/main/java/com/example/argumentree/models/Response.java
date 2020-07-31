@@ -16,8 +16,8 @@ public class Response extends Post{
     // Fields which match the Firestore object
     final private String postType = Constants.RESPONSE;
     private int descendants;
-    private int agreements;
-    private int disagreements;
+    private int likes;
+    private int dislikes;
     private String authorRef;
     private String parentRef;
     private String questionRef;
@@ -30,10 +30,10 @@ public class Response extends Post{
     public Response(){
     }
 
-    public Response(int descendants, int agreements, int disagreements, String authorRef, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
+    public Response(int descendants, int likes, int dislikes, String authorRef, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
         this.descendants = descendants;
-        this.agreements = agreements;
-        this.disagreements = disagreements;
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.authorRef = authorRef;
         this.parentRef = parentRef;
         this.questionRef = questionRef;
@@ -72,20 +72,20 @@ public class Response extends Post{
         this.descendants = descendants;
     }
 
-    public int getAgreements() {
-        return agreements;
+    public int getLikes() {
+        return likes;
     }
 
-    public void setAgreements(int agreements) {
-        this.agreements = agreements;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
-    public int getDisagreements() {
-        return disagreements;
+    public int getDislikes() {
+        return dislikes;
     }
 
-    public void setDisagreements(int disagreements) {
-        this.disagreements = disagreements;
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 
     public String getParentRef() {

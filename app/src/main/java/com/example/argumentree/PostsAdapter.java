@@ -2,6 +2,8 @@ package com.example.argumentree;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -11,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,10 +22,19 @@ import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.Response;
 import com.example.argumentree.models.User;
+import com.example.argumentree.models.Vote;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import org.parceler.Parcels;
 
@@ -89,16 +99,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             private TextView tvResponseBrief;
             private TextView tvResponseClaim;
             private TextView tvResponseSource;
-            private TextView tvResponseInteractions;
+            private TextView tvResponseLikes;
+            private TextView tvResponseDislikes;
             private TextView tvResponseUsername;
             private ImageView iconResponseReply;
             private ImageView iconResponseTreeView;
-            private ImageView iconAgree;
-            private ImageView iconDisagree;
+            private ImageView iconLike;
+            private ImageView iconDislike;
 
             // Model
             User questionUser;
             User responseUser;
+            String voteState = null;
+            DocumentReference voteDocument = null;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -114,14 +127,62 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 tvResponseBrief = itemView.findViewById(R.id.tvResponseBrief);
                 tvResponseClaim = itemView.findViewById(R.id.tvResponseClaim);
                 tvResponseSource = itemView.findViewById(R.id.tvResponseSource);
-                tvResponseInteractions = itemView.findViewById(R.id.tvResponseInteractions);
+                tvResponseLikes = itemView.findViewById(R.id.tvResponseLikes);
+                tvResponseDislikes = itemView.findViewById(R.id.tvResponseDislikes);
                 tvResponseUsername = itemView.findViewById(R.id.tvResponseUsername);
                 iconResponseReply = itemView.findViewById(R.id.iconResponseReply);
                 iconResponseTreeView = itemView.findViewById(R.id.iconResponseTreeView);
-                iconAgree = itemView.findViewById(R.id.iconAgree);
-                iconDisagree = itemView.findViewById(R.id.iconDisagree);
+                iconLike = itemView.findViewById(R.id.iconLike);
+                iconDislike = itemView.findViewById(R.id.iconDislike);
+            }
+
+            private void assignVoteState(final Response response) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                // voteState stays null if user is not signed in
+                if (auth.getCurrentUser() == null){
+                    Log.i(TAG, "get current user was null");
+                    return;
+                }
 
 
+                db.collection( Constants.FB_VOTES )
+                        .whereEqualTo( Constants.VOTE_RESPONSE_REF, response.getDocID() )
+                        .whereEqualTo( Constants.VOTE_USER_REF, auth.getCurrentUser().getUid() )
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    QuerySnapshot result = task.getResult();
+                                     if ( result.isEmpty() ) {
+                                         voteState = Constants.VOTE_STATE_UNVOTED;
+                                         Log.i(TAG, "result from vote lookup was empty");
+                                     }
+                                     else if (result.size() > 1){
+                                         Log.e(TAG, "multiple votes returned when they should be unique");
+                                     }
+                                     else{
+                                         // Should only execute once
+                                         for (DocumentSnapshot doc : result){
+                                             Log.i(TAG, "parsing result");
+                                             voteDocument = doc.getReference();
+                                             if ( doc.getString( Constants.VOTE_DIRECTION ).equals( Constants.VOTE_LIKE ) ){
+                                                 voteState = Constants.VOTE_STATE_LIKED;
+                                             }
+                                             else {
+                                                 voteState = Constants.VOTE_STATE_DISLIKED;
+                                             }
+                                         }
+                                     }
+                                }
+                                else{
+                                    Log.e(TAG, "Querying for vote unsuccessful");
+                                }
+                                updateVoteIcons(voteState);
+                            }
+                        });
             }
 
             public void bindQuestion(final Question question) {
@@ -174,13 +235,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 getUserAndFill(response.getAuthorRef(), response);
                 // Bind associated question and fill its information in
                 getResponseQuestionAndFill(response.getQuestionRef());
+                // bind vote
+                assignVoteState(response);
 
                 clResponse.setVisibility(View.VISIBLE);
-                tvResponseBrief.setText(response.getBrief());
-                tvResponseClaim.setText(response.getClaim());
-                tvResponseSource.setText(response.getSource());
-                tvResponseInteractions.setText(Integer.toString(response.getAgreements() + response.getDisagreements()));
-
+                tvResponseBrief.setText( response.getBrief() );
+                tvResponseClaim.setText( response.getClaim() );
+                tvResponseSource.setText( response.getSource() );
+                tvResponseLikes.setText( Integer.toString( response.getLikes() ) );
+                tvResponseDislikes.setText( Integer.toString( response.getDislikes() ) );
                 // set Listeners
                 // response button
                 iconResponseReply.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +258,169 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     }
                 });
 
+                iconLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleVote(response, Constants.VOTE_LIKE);
+                    }
+                });
+
+                // similar to above
+                iconDislike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleVote(response, Constants.VOTE_DISLIKE);
+                    }
+                });
+
+                tvResponseBrief.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        String label = "ArgumentTree Response Post";
+                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(label, response.getBrief() );
+                        clipboard.setPrimaryClip(clip);
+
+                        Snackbar.make(view, "Text copied to clipboard", Snackbar.LENGTH_SHORT).show();
+
+                        return false;
+                    }
+                });
+            }
+
+            private void handleVote(final Response response, final String direction) {
+                final FirebaseAuth auth = FirebaseAuth.getInstance();
+                final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                // Don't do anything if not signed in
+                if (auth.getCurrentUser() == null){
+                    Log.e(TAG, "User not signed in so skipped doing anything on click");
+                    return;
+                }
+                // Don't do anything if query hasn't finished
+                if (voteState == null){
+                    Log.i(TAG, "VoteState is null");
+                    return ;
+                }
+
+                final DocumentReference prevVoteDoc = voteDocument;
+                final String prevVoteState = voteState;
+
+                WriteBatch batch = db.batch();
+                Log.i(TAG, "voteState before: " + voteState);
+                if ( direction.equals( Constants.VOTE_LIKE ) ) {
+                    if ( voteState.equals( Constants.VOTE_STATE_UNVOTED ) ) {
+                        // create vote doc
+                        DocumentReference generatedDocID = db.collection(Constants.FB_VOTES).document();
+                        batch.set( generatedDocID, new Vote( response.getDocID(), auth.getCurrentUser().getUid(), direction ) );
+
+                        // increase response post counter by 1
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( 1 ) );
+
+                        // updating views vote document
+                        voteDocument = generatedDocID;
+                        voteState = Constants.VOTE_STATE_LIKED;
+                    }
+                    else if ( voteState.equals( Constants.VOTE_STATE_LIKED ) ) {
+                        // delete voteDoc
+                        batch.delete( voteDocument );
+
+                        // decrement response like counter by 1
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1) );
+
+                        // updating views vote document
+                        voteDocument = null;
+                        voteState = Constants.VOTE_STATE_UNVOTED;
+                    }
+                    else if ( voteState.equals( Constants.VOTE_STATE_DISLIKED ) ) {
+                        // update doc to be dislike
+                        batch.update( voteDocument, Constants.VOTE_DIRECTION, Constants.VOTE_DISLIKE );
+
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        // decrement response like by 1
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( -1) );
+                        // increment response dislike by 1
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( 1) );
+
+                        voteState = Constants.VOTE_STATE_LIKED;
+                    }
+                }
+                else if ( direction.equals( Constants.VOTE_DISLIKE ) ) {
+                    if ( voteState.equals( Constants.VOTE_STATE_UNVOTED ) ) {
+                        // create vote doc
+                        DocumentReference generatedDocID = db.collection(Constants.FB_VOTES).document();
+                        batch.set( generatedDocID, new Vote( response.getDocID(), auth.getCurrentUser().getUid(), direction ) );
+
+                        // increase dislike counter by 1
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( 1 ) );
+
+                        // updating vote document
+                        voteDocument = generatedDocID;
+                        voteState = Constants.VOTE_STATE_DISLIKED;
+
+                    }
+                    else if ( voteState.equals( Constants.VOTE_STATE_LIKED ) ) {
+                        // update doc to be like instead of dislike
+                        batch.update( voteDocument, Constants.VOTE_DIRECTION, Constants.VOTE_LIKE );
+
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        // decrement dislike
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( -1) );
+                        // increment like
+                        batch.update( responseDocRef, Constants.RESPONSE_LIKES , FieldValue.increment( 1) );
+
+                        voteState = Constants.VOTE_STATE_DISLIKED;
+                    }
+                    else if ( voteState.equals( Constants.VOTE_STATE_DISLIKED ) ) {
+                        // delete voteDoc
+                        batch.delete( voteDocument );
+
+                        // decrement dislike counter
+                        DocumentReference responseDocRef = db.collection( Constants.FB_POSTS ).document( response.getDocID() );
+                        batch.update( responseDocRef, Constants.RESPONSE_DISLIKES , FieldValue.increment( -1) );
+
+                        // updating views vote document
+                        voteDocument = null;
+                        voteState = Constants.VOTE_STATE_UNVOTED;
+                    }
+                }
+                updateVoteIcons(voteState);
+                batch.commit()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.i(TAG, "Success, voteState is now: " + voteState);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                voteDocument = prevVoteDoc;
+                                voteState = prevVoteState;
+                                updateVoteIcons(voteState);
+                                Log.e(TAG, "failure in transaction", e);
+                            }
+                        });
+            }
+
+            private void updateVoteIcons(String newState) {
+                switch (voteState){
+                    case Constants.VOTE_STATE_DISLIKED:
+                        iconLike.setImageResource(R.drawable.ic_thumbs_up);
+                        iconDislike.setImageResource(R.drawable.ic_thumbs_down_filled);
+                        break;
+                    case Constants.VOTE_STATE_LIKED:
+                        iconLike.setImageResource(R.drawable.ic_thumbs_up_filled);
+                        iconDislike.setImageResource(R.drawable.ic_thumbs_down);
+                        break;
+                    case Constants.VOTE_STATE_UNVOTED:
+                        iconLike.setImageResource(R.drawable.ic_thumbs_up);
+                        iconDislike.setImageResource(R.drawable.ic_thumbs_down);
+                        break;
+                }
             }
 
             // get question object relating to response object
@@ -213,7 +439,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                                     question.setDocID(document.getId());
 
                                     bindQuestion(question);
-
                                 }
                             }
                         });
@@ -232,9 +457,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     User user = document.toObject(User.class);
-
                                     fillUserDependantInfo(user, post);
-
                                 }
                             }
                         });
