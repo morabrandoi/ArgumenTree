@@ -3,10 +3,11 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="ArgumenTreeGreen">#106000</color>
+    <color name="ArgumenTreeGreen">#2E7D32</color>
+    <color name="DarkerArgumenTreeGreen">#1B5E20</color>
     <color name="ResponseSubBlock">#F1F7F1</color>
     <color name="NavBarItemTint">#FFFFFF</color>
-    <color name="LighterArgumenTreeGreen">#DCE8D9</color>
-    <color name="ArgumenTreeBrown">#705000</color>
-    <color name="white">#FFFFFF</color>
+    <color name="LighterArgumenTreeGreen">#E8F5E9</color>
+    <color name="ArgumenTreeBrown">#A1887F</color>
+
 </resources>

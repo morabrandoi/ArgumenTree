@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/ArgumenTreeGreen</item>
-        <item name="colorPrimaryDark">#0C4A00</item>
+        <item name="colorPrimaryDark">@color/DarkerArgumenTreeGreen</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- enable window content transitions -->
