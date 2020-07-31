@@ -158,7 +158,7 @@ public class TreeActivity extends AppCompatActivity {
             @Override
             public GraphView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.node, parent, false);
-                return new SimpleViewHolder(view);
+                return new NodeViewHolder(view);
             }
 
             @Override
@@ -167,23 +167,23 @@ public class TreeActivity extends AppCompatActivity {
                 Object nodePost = curNode.getData();
 
                 if (curNode.getData() instanceof Question){
-                    ((SimpleViewHolder) viewHolder).nodeBrief.setText( question.getBody() );
+                    ((NodeViewHolder) viewHolder).nodeBrief.setText( question.getBody() );
                 }
                 else if (curNode.getData() instanceof Response){
                     Response response = (Response) nodePost;
-                    ((SimpleViewHolder) viewHolder).nodeBrief.setText( response.getBrief() );
-                    ((SimpleViewHolder) viewHolder).nodeClaim.setText( response.getClaim() );
+                    ((NodeViewHolder) viewHolder).nodeBrief.setText( response.getBrief() );
+                    ((NodeViewHolder) viewHolder).nodeClaim.setText( response.getClaim() );
                 }
                 else {
                     throw new RuntimeException("When binding node view, data passed in is not response or question");
                 }
             }
 
-            class SimpleViewHolder extends GraphView.ViewHolder {
+            class NodeViewHolder extends GraphView.ViewHolder {
                 TextView nodeBrief;
                 TextView nodeClaim;
 
-                SimpleViewHolder(View itemView) {
+                NodeViewHolder(View itemView) {
                     super(itemView);
                     nodeBrief = itemView.findViewById(R.id.nodeBrief);
                     nodeClaim = itemView.findViewById(R.id.nodeClaim);

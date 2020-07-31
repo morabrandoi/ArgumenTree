@@ -8,6 +8,8 @@
     app:hasClickableChildren="true"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     tools:context=".TreeActivity">
 
     <de.blox.graphview.GraphView
@@ -15,7 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:lineColor="@color/ArgumenTreeBrown"
-        app:lineThickness="2dp"
+        app:lineThickness="6dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         app:useMaxSize="false" />
 
 </com.otaliastudios.zoom.ZoomLayout>
