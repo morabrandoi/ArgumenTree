@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.argumentree.fragments.HomeFragment;
 import com.example.argumentree.fragments.NotificationsFragment;
@@ -27,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         // Ensure that user is signed in
         ensureUserInSharedPref();
 
+        // getting Firebase Cloud Messaging token
+        getFCMToken();
+
         // Pulling references View elements
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -52,12 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (menuItem.getItemId() == R.id.action_compose) {
                     // Check if user is signed in. If not -> sign in page. If so -> compose page
-                    if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                    if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                         Intent intent = new Intent(MainActivity.this, UserAuthActivity.class);
                         startActivity(intent);
                         return false;
-                    }
-                    else{
+                    } else {
                         Intent intent = new Intent(MainActivity.this, ComposeQuestionActivity.class);
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this);
                         startActivity(intent, options.toBundle());
@@ -100,6 +105,27 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 
+    private void getFCMToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = token;
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     // if user is not in sharedPref, pull user in and add to shared Pref
     private void ensureUserInSharedPref() {
         boolean hasUser = SharedPrefHelper.hasUserIn(this);
@@ -115,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 // putting User object in shared prefs
                                 DocumentSnapshot document = task.getResult();
                                 User user = document.toObject(User.class);
