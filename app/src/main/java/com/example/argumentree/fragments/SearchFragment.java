@@ -70,6 +70,8 @@ public class SearchFragment extends Fragment {
         rvSearch.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSearch.setAdapter(postsAdapter);
         rvSearch.addItemDecoration(new DividerItemDecoration(rvSearch.getContext(), DividerItemDecoration.VERTICAL));
+        rvSearch.addItemDecoration(new DividerItemDecoration(rvSearch.getContext(), DividerItemDecoration.VERTICAL));
+
 
         // Setting up search view
         searchView.setOnSearchClickListener(new View.OnClickListener() {

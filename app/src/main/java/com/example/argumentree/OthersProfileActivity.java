@@ -3,6 +3,7 @@ package com.example.argumentree;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,6 +84,7 @@ public class OthersProfileActivity extends AppCompatActivity {
         postsAdapter = new PostsAdapter(this, othersPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(this));
         rvContributions.setAdapter(postsAdapter);
+        rvContributions.addItemDecoration(new DividerItemDecoration(rvContributions.getContext(), DividerItemDecoration.VERTICAL));
         fillContributionsFromFirestore();
 
         // Setting UI elements

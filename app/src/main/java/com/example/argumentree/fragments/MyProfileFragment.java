@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -111,6 +112,7 @@ public class MyProfileFragment extends Fragment {
         postsAdapter = new PostsAdapter(getContext(), ownPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvContributions.setAdapter(postsAdapter);
+        rvContributions.addItemDecoration(new DividerItemDecoration(rvContributions.getContext(), DividerItemDecoration.VERTICAL));
         fillContributionsFromFirestore();
 
         // Setting listeners
