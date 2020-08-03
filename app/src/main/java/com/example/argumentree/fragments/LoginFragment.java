@@ -20,16 +20,21 @@ import com.example.argumentree.SharedPrefHelper;
 import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.lang.reflect.Field;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,6 +81,9 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             // Getting user object from firestore and storing it in shared prefs
                             storeFirestoreUser();
+                            // pushing FCM messaging token to firestore
+                            putFCMTokenInFirestore();
+
                             getActivity().finish();
 
                         } else {
@@ -89,6 +97,29 @@ public class LoginFragment extends Fragment {
         });
 
 
+    }
+
+    private void putFCMTokenInFirestore() {
+        Log.i(TAG, "putFCMTokenInFirestore: Just testing im here");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String firebaseInstanceID = SharedPrefHelper.getFirebaseInstanceID( getContext() );
+
+        db.collection( Constants.FB_USERS )
+                .document( auth.getCurrentUser().getUid() )
+                .update( Constants.USER_DEVICE_TOKENS, FieldValue.arrayUnion( firebaseInstanceID ))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "onSuccess: firebaseInstanceID was updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "onFailure: firebaseInstanceID was not updated to user", e);
+                    }
+                });
     }
 
     // pulls full user information from firestore and stores it in shared prefs

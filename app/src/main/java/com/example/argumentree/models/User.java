@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import org.parceler.Parcel;
 
 import java.util.Date;
+import java.util.List;
 
 @Parcel
 public class User {
@@ -16,12 +17,13 @@ public class User {
     private String authUserID;
     private @ServerTimestamp Date createdAt;
     private int likes;
+    private List<String> firebaseInstanceIDs;
 
     public User() {
 
     }
 
-    public User(String email, String username, String profilePic, String bio, String authUserID, Date createdAt, int likes) {
+    public User(String email, String username, String profilePic, String bio, String authUserID, Date createdAt, int likes, List<String> firebaseInstanceIDs) {
         this.email = email;
         this.username = username;
         this.profilePic = profilePic;
@@ -29,6 +31,7 @@ public class User {
         this.authUserID = authUserID;
         this.createdAt = createdAt;
         this.likes = likes;
+        this.firebaseInstanceIDs = firebaseInstanceIDs;
     }
 
     public String getEmail() {
@@ -85,5 +88,13 @@ public class User {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public List<String> getFirebaseInstanceIDs() {
+        return firebaseInstanceIDs;
+    }
+
+    public void setFirebaseInstanceIDs(List<String> firebaseInstanceIDs) {
+        this.firebaseInstanceIDs = firebaseInstanceIDs;
     }
 }

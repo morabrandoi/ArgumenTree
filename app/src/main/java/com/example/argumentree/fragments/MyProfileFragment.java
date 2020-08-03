@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -121,6 +122,10 @@ public class MyProfileFragment extends Fragment {
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // remove this firebaseInstanceID from the user array
+                removeFirebaseInstanceIDFromUser();
+
                 // Signing out user
                 FirebaseAuth.getInstance().signOut();
 
@@ -153,6 +158,28 @@ public class MyProfileFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void removeFirebaseInstanceIDFromUser() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String firebaseInstanceID = SharedPrefHelper.getFirebaseInstanceID( getContext() );
+
+        db.collection( Constants.FB_USERS )
+                .document( auth.getCurrentUser().getUid() )
+                .update( Constants.USER_DEVICE_TOKENS, FieldValue.arrayRemove( firebaseInstanceID ))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "onSuccess: firebaseInstanceID was updated and deleted");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "onFailure: firebaseInstanceID was not updated to user", e);
+                    }
+                });
     }
 
     @Override

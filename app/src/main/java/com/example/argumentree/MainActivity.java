@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         // Ensure that user is signed in
         ensureUserInSharedPref();
 
-        // getting Firebase Cloud Messaging token
-        getFCMToken();
+        // Ensure firebaseInstanceID is in sharedPrefs
+        ensureFirebaseInstanceIDInSharedPref();
 
         // Pulling references View elements
         bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -105,7 +105,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 
-    private void getFCMToken() {
+    private void ensureFirebaseInstanceIDInSharedPref() {
+        Log.i(TAG, "ensuring firebaseinstanceID is in shared pref");
+        boolean hasInstanceID = SharedPrefHelper.hasUserIn(this);
+
+        if (hasInstanceID) {
+            Log.i(TAG, "Was in shared pref already. Nice ");
+            return;
+        }
+
+        Log.i(TAG, "Was not in shared pref already");
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -117,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
+                        SharedPrefHelper.putFirebaseInstanceIDIn(MainActivity.this, token);
 
                         // Log and toast
                         String msg = token;
@@ -124,10 +135,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
     }
 
     // if user is not in sharedPref, pull user in and add to shared Pref
     private void ensureUserInSharedPref() {
+
         boolean hasUser = SharedPrefHelper.hasUserIn(this);
         if (!hasUser && FirebaseAuth.getInstance().getCurrentUser() != null) {
 

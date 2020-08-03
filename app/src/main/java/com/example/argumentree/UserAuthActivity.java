@@ -17,15 +17,12 @@ import com.google.gson.Gson;
 
 public class UserAuthActivity extends AppCompatActivity {
     public static final String TAG = "UserAuthActivity";
-//    public FirebaseAuth auth;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_auth);
-
-//        auth = FirebaseAuth.getInstance();
 
         Fragment signUpFrag = new SignUpFragment();
         fragmentManager.beginTransaction().replace(R.id.flContainerUserAuth, signUpFrag).commit();

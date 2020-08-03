@@ -36,4 +36,27 @@ public class SharedPrefHelper {
         String json = sharedPref.getString(Constants.SP_CURRENT_USER, null);
         return (json != null);
     }
+
+    public static void putFirebaseInstanceIDIn(Context context, String id){
+        SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_FIREBASE_INSTANCE_ID, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Constants.SP_FIREBASE_INSTANCE_ID, id);
+
+        editor.apply();
+    }
+
+    public static String getFirebaseInstanceID(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_FIREBASE_INSTANCE_ID, Context.MODE_PRIVATE);
+        String id = sharedPref.getString(Constants.SP_FIREBASE_INSTANCE_ID, null);
+        if (id == null){
+            Log.e(TAG, "Shared pref firebaseInstanceID is null");
+        }
+        return id;
+    }
+
+    public static boolean hasFirebaseInstanceIDIn(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(Constants.SP_FIREBASE_INSTANCE_ID, Context.MODE_PRIVATE);
+        String id = sharedPref.getString(Constants.SP_FIREBASE_INSTANCE_ID, null);
+        return (id == null);
+    }
 }

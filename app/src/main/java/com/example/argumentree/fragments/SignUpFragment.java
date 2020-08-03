@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -120,14 +122,16 @@ public class SignUpFragment extends Fragment {
         // Assigning fields of the user object
         String email = etEmail.getText().toString();
         String username = etUsername.getText().toString();
-        String profilePic = null;
+        String profilePic = "https://placeimg.com/360/360/people";
         String bio = "Hanging in there!";
         String authUserID = uid;
         Date createdAt = new Date();
         int likes = 0;
+        List<String> deviceTokens = new ArrayList<>();
+        deviceTokens.add( SharedPrefHelper.getFirebaseInstanceID(getContext()) );
 
         // Creating user object from the fields
-        final User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes);
+        final User user = new User(email, username, profilePic, bio, authUserID, createdAt, likes, deviceTokens);
         // Grabbing reference to current activity
         final UserAuthActivity parentActivity = (UserAuthActivity) getActivity();
 

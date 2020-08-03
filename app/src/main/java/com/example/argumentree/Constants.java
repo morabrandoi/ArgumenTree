@@ -10,6 +10,7 @@ public class Constants {
     public static final String USER_AUTH_USER_ID = "authUserID";
     public static final String USER_LIKES = "likes";
     public static final String USER_CREATED_AT = "createdAt";
+    public static final String USER_DEVICE_TOKENS = "firebaseInstanceIDs";
 
     // for generic Post
     public static final String POST_TYPE = "postType";
@@ -55,5 +56,6 @@ public class Constants {
     public static final String ALL_RESPONSES = "allResponses";
 
     // Shared Preferences
-    public static final String SP_CURRENT_USER = "com.example.argumentree.currentUser";
+    public static final String SP_CURRENT_USER = "argumentree.currentUser";
+    public static final String SP_FIREBASE_INSTANCE_ID = "argumentree.firebaseInstanceID";
 }
