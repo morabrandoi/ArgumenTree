@@ -114,6 +114,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             DocumentReference voteDocument = null;
             Boolean middleOfBatchWrite = false;
 
+            //TODO: fix recycler view recycling
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 // Question UI references
@@ -135,6 +136,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 iconResponseTreeView = itemView.findViewById(R.id.iconResponseTreeView);
                 iconLike = itemView.findViewById(R.id.iconLike);
                 iconDislike = itemView.findViewById(R.id.iconDislike);
+
+                clResponse.setVisibility(View.GONE);
             }
 
             // Read in Vote state on load so each post can have proper liking
@@ -195,6 +198,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 // Fill initial
                 tvQuestionBody.setText(question.getBody());
                 tvQuestionDescendants.setText(Integer.toString(question.getDescendants()));
+                if ( question.getDescendants() == 0){
+                    iconQuestionTreeView.setVisibility(View.GONE);
+                }
 
                 iconQuestionReply.setOnClickListener(new View.OnClickListener() {
                     @Override
