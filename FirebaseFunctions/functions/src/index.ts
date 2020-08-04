@@ -84,6 +84,7 @@ export const notifyPostRepliedTo = functions.firestore.document(ANY_POST).onCrea
 
         if (instanceIDs){
             instanceIDs.forEach(element => {
+                console.log("pushing notifying promises into array")
                 promises.push( admin.messaging().sendToDevice(element.valueOf(), payload) )
             });
         }
