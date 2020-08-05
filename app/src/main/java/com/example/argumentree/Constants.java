@@ -51,6 +51,10 @@ public class Constants {
     public static final String VOTE_USER_REF = "userRef";
     public static final String VOTE_DIRECTION = "direction";
 
+    // for notifications
+    public static final String NOTIFICATIONS = "notifications";
+    public static final String NOTI_NOTIFIED_USER = "notifiedUser";
+
     // for intents on the client
     public static final String PARENT_TYPE = "parentType";
     public static final String ALL_RESPONSES = "allResponses";
