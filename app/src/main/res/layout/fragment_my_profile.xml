@@ -1,92 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.MyProfileFragment">
 
-    <Button
-        android:id="@+id/btnLogOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:textAllCaps="false"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/ivProfilePageProfilePic"
-        app:layout_constraintStart_toStartOf="@+id/ivProfilePageProfilePic"
-        app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic" />
-
-    <ImageView
-        android:id="@+id/ivProfilePageProfilePic"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tvProfilePageUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="userNameHere"
-        app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="userNameHere" />
-
-    <TextView
-        android:id="@+id/tvProfilePageBio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="Bio information hereeeee"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
-        app:layout_constraintTop_toBottomOf="@+id/tvProfilePageUsername"
-        tools:text="Bio information hereeeee" />
-
-    <LinearLayout
-        android:id="@+id/llLikeLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic">
-
-        <ToggleButton
-            android:id="@+id/togBtnLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="Like"
-            android:textOn="Unlike" />
-
-        <TextView
-            android:id="@+id/tvLikeCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="3.2k" />
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvContributions"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogOut" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clProfileInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/btnLogOut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Log Out"
+                    android:textAllCaps="false"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="@+id/ivProfilePageProfilePic"
+                    app:layout_constraintStart_toStartOf="@+id/ivProfilePageProfilePic"
+                    app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic" />
+
+                <ImageView
+                    android:id="@+id/ivProfilePageProfilePic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/tvProfilePageUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:text="userNameHere"
+                    app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="userNameHere" />
+
+                <TextView
+                    android:id="@+id/tvProfilePageBio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="Bio information hereeeee"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
+                    app:layout_constraintTop_toBottomOf="@+id/tvProfilePageUsername"
+                    tools:text="Bio information hereeeee" />
+
+                <LinearLayout
+                    android:id="@+id/llLikeLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic">
+
+                    <ToggleButton
+                        android:id="@+id/togBtnLike"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textOff="Like"
+                        android:textOn="Unlike" />
+
+                    <TextView
+                        android:id="@+id/tvLikeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:text="3.2k" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clProfileInfo">
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvContributions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                     />
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -97,7 +97,6 @@ public class MyProfileFragment extends Fragment {
         tvProfilePageBio = view.findViewById(R.id.tvProfilePageBio);
         togBtnLike = view.findViewById(R.id.togBtnLike);
         tvLikeCount = view.findViewById(R.id.tvLikeCount);
-        tvHasContributedTo = view.findViewById(R.id.tvHasContributedTo);
         rvContributions = view.findViewById(R.id.rvContributions);
 
         // Set up user-dependant information
@@ -113,6 +112,7 @@ public class MyProfileFragment extends Fragment {
         postsAdapter = new PostsAdapter(getContext(), ownPosts);
         rvContributions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvContributions.setAdapter(postsAdapter);
+        rvContributions.setNestedScrollingEnabled(false);
         rvContributions.addItemDecoration(new DividerItemDecoration(rvContributions.getContext(), DividerItemDecoration.VERTICAL));
         fillContributionsFromFirestore();
 

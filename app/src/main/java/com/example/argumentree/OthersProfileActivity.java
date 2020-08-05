@@ -76,7 +76,6 @@ public class OthersProfileActivity extends AppCompatActivity {
         tvOthersBio = findViewById(R.id.tvOthersBio);
         togBtnLike = findViewById(R.id.togBtnLike);
         tvLikeCount = findViewById(R.id.tvLikeCount);
-        tvHasContributedTo = findViewById(R.id.tvHasContributedTo);
         rvContributions = findViewById(R.id.rvContributions);
 
         // Setting up recycler view
