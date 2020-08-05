@@ -11,10 +11,11 @@
         android:id="@+id/btnLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="16dp"
         android:text="Log Out"
-        app:layout_constraintStart_toEndOf="@+id/llLikeLayout"
+        android:textAllCaps="false"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivProfilePageProfilePic"
+        app:layout_constraintStart_toStartOf="@+id/ivProfilePageProfilePic"
         app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic" />
 
     <ImageView
@@ -60,6 +61,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic">
 
@@ -78,24 +80,13 @@
             tools:text="3.2k" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvHasContributedTo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="Has Contributed To:"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llLikeLayout" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvContributions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHasContributedTo" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLogOut" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
