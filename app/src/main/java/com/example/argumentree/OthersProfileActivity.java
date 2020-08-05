@@ -92,7 +92,7 @@ public class OthersProfileActivity extends AppCompatActivity {
         tvOthersBio.setText(user.getBio());
 
         if (this.user.getProfilePic() != null){
-            Glide.with(this).load( this.user.getProfilePic() ).into(ivOthersProfilePic);
+            Glide.with(this).load( this.user.getProfilePic() ).circleCrop().into(ivOthersProfilePic);
         }
 
     }

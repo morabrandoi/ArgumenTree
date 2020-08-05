@@ -105,7 +105,7 @@ public class MyProfileFragment extends Fragment {
         tvProfilePageUsername.setText( user.getUsername() );
         tvProfilePageBio.setText( user.getBio() );
         if (user.getProfilePic() != null){
-            Glide.with(this).load( user.getProfilePic() ).into(ivProfilePageProfilePic);
+            Glide.with(this).load( user.getProfilePic() ).circleCrop().into(ivProfilePageProfilePic);
         }
 
         // Setting up recycler view
