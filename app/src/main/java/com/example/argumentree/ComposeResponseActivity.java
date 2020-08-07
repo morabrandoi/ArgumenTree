@@ -29,6 +29,7 @@ import java.util.Date;
 public class ComposeResponseActivity extends AppCompatActivity {
 
     public static final String TAG = "ComposeResponseActivity";
+    public static final int BRIEF_LIMIT = 100;
 
     // View member variables
     private EditText etBrief;
@@ -79,6 +80,11 @@ public class ComposeResponseActivity extends AppCompatActivity {
         btnPostResponse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!validateInputs()){
+                    return;
+                }
+
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 SharedPrefHelper.hasUserIn(ComposeResponseActivity.this);
 
@@ -122,5 +128,38 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    // Returns whether the inputs in the form are valid
+    private boolean validateInputs() {
+        boolean briefIsFilled = !etBrief.getText().toString().isEmpty();
+        boolean claimIsFilled = !etClaim.getText().toString().isEmpty();
+        boolean sourceIsFilled = !etSource.getText().toString().isEmpty();
+        boolean sourceIsSingleWord = !etSource.getText().toString().trim().contains(" ");
+        boolean briefWithinSize = etBrief.getText().toString().length() <= BRIEF_LIMIT;
+
+        if (!briefIsFilled){
+            etBrief.setError("This box is empty!");
+        }
+
+        if (!claimIsFilled){
+            etClaim.setError("This box is empty!");
+        }
+
+        if (!sourceIsFilled){
+            etSource.setError("This box is empty!");
+        }
+
+        if (!sourceIsSingleWord){
+            etSource.setError("Invalid link!");
+        }
+
+        if (!briefWithinSize){
+            etBrief.setError("Brief too long!");
+        }
+
+        return (briefIsFilled && claimIsFilled &&
+                sourceIsFilled && sourceIsSingleWord &&
+                briefWithinSize);
     }
 }
