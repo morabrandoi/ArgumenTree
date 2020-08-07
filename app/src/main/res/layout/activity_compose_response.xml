@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:hint="Brief"
         app:counterEnabled="true"
         app:counterMaxLength="100"
@@ -37,7 +37,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etBrief"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="2" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -57,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Claim"
-            android:singleLine="true" />
+            android:maxLines="5" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,7 +80,8 @@
             android:id="@+id/etSource"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autoLink="web" />
+            android:autoLink="web"
+            android:singleLine="true" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
