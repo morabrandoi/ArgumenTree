@@ -1,5 +1,11 @@
 package com.example.argumentree;
 
+import com.firebase.ui.auth.AuthUI;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Constants {
     // For users document
     public static final String FB_USERS = "users";
@@ -58,6 +64,7 @@ public class Constants {
     // for intents on the client
     public static final String PARENT_TYPE = "parentType";
     public static final String ALL_RESPONSES = "allResponses";
+
 
     // Shared Preferences
     public static final String SP_CURRENT_USER = "argumentree.currentUser";

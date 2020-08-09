@@ -10,60 +10,32 @@ import java.util.List;
 @Parcel
 public class User {
 
-    private String email;
-    private String username;
-    private String profilePic;
-    private String bio;
     private String authUserID;
-    private @ServerTimestamp Date createdAt;
+    private String bio;
+    private String email;
+    private String phoneNumber;
+    private String profilePic;
+    private String providerType;
+    private String username;
     private int likes;
     private List<String> firebaseInstanceIDs;
+    private @ServerTimestamp Date createdAt;
 
     public User() {
 
     }
 
-    public User(String email, String username, String profilePic, String bio, String authUserID, Date createdAt, int likes, List<String> firebaseInstanceIDs) {
-        this.email = email;
-        this.username = username;
-        this.profilePic = profilePic;
-        this.bio = bio;
+    public User(String authUserID, String bio, String email, String phoneNumber, String profilePic, String providerType, String username, int likes, List<String> firebaseInstanceIDs, Date createdAt) {
         this.authUserID = authUserID;
-        this.createdAt = createdAt;
+        this.bio = bio;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.profilePic = profilePic;
+        this.providerType = providerType;
+        this.username = username;
         this.likes = likes;
         this.firebaseInstanceIDs = firebaseInstanceIDs;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getProfilePic() {
-        return profilePic;
-    }
-
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
+        this.createdAt = createdAt;
     }
 
     public String getAuthUserID() {
@@ -74,12 +46,52 @@ public class User {
         this.authUserID = authUserID;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getBio() {
+        return bio;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public String getProviderType() {
+        return providerType;
+    }
+
+    public void setProviderType(String providerType) {
+        this.providerType = providerType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getLikes() {
@@ -96,5 +108,13 @@ public class User {
 
     public void setFirebaseInstanceIDs(List<String> firebaseInstanceIDs) {
         this.firebaseInstanceIDs = firebaseInstanceIDs;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

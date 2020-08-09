@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -30,11 +31,11 @@ import com.example.argumentree.Constants;
 import com.example.argumentree.PostsAdapter;
 import com.example.argumentree.R;
 import com.example.argumentree.SharedPrefHelper;
-import com.example.argumentree.UserAuthActivity;
 import com.example.argumentree.models.Post;
 import com.example.argumentree.models.Question;
 import com.example.argumentree.models.Response;
 import com.example.argumentree.models.User;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +60,7 @@ public class MyProfileFragment extends Fragment {
     public static final String TAG = "MyProfileFragment";
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
 
+    //TODO: Debug And test Sign in and sign out
     // UI variables
     private Button btnLogOut;
     private ImageView ivProfilePageProfilePic;
@@ -100,11 +102,11 @@ public class MyProfileFragment extends Fragment {
         rvContributions = view.findViewById(R.id.rvContributions);
 
         // Set up user-dependant information
-        user = SharedPrefHelper.getUser( getActivity() );
-        tvProfilePageUsername.setText( user.getUsername() );
-        tvProfilePageBio.setText( user.getBio() );
-        if (user.getProfilePic() != null){
-            Glide.with(this).load( user.getProfilePic() ).circleCrop().into(ivProfilePageProfilePic);
+        user = SharedPrefHelper.getUser(getActivity());
+        tvProfilePageUsername.setText(user.getUsername());
+        tvProfilePageBio.setText(user.getBio());
+        if (user.getProfilePic() != null) {
+            Glide.with(this).load(user.getProfilePic()).circleCrop().into(ivProfilePageProfilePic);
         }
 
         // Setting up recycler view
@@ -127,23 +129,26 @@ public class MyProfileFragment extends Fragment {
                 removeFirebaseInstanceIDFromUser();
 
                 // Signing out user
-                FirebaseAuth.getInstance().signOut();
+                AuthUI.getInstance()
+                        .signOut(getActivity())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.i(TAG, "onSuccess: Signout was successful");
+                                Toast.makeText(getActivity(), "Sign out was successful", Toast.LENGTH_SHORT).show();
 
-                // Sending user back to log in screen
-                Intent intent = new Intent(getContext(), UserAuthActivity.class);
-                startActivity(intent);
+                                finishSignOut();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i(TAG, "onFailure: Signout was unsuccessful");
+                                Toast.makeText(getActivity(), "Sign out was unsuccessful", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                // Setting tab to be home timeline
-                Fragment fragment = new HomeFragment();
-                getFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
-                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigation);
-                bottomNavigationView.setSelectedItemId(R.id.action_home);
 
-                // Clear sharedPreferences of logged in user
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(Constants.SP_CURRENT_USER, null);
-                editor.apply();
             }
         });
 
@@ -160,14 +165,30 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
+    private void finishSignOut() {
+        // Setting tab to be home timeline
+        Fragment fragment = new HomeFragment();
+        getFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
+
+        // Clear sharedPreferences of logged in user
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.SP_CURRENT_USER, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(Constants.SP_CURRENT_USER);
+//        editor.putString(Constants.SP_CURRENT_USER, null);
+
+        editor.apply();
+    }
+
     private void removeFirebaseInstanceIDFromUser() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        String firebaseInstanceID = SharedPrefHelper.getFirebaseInstanceID( getContext() );
+        String firebaseInstanceID = SharedPrefHelper.getFirebaseInstanceID(getContext());
 
-        db.collection( Constants.FB_USERS )
-                .document( auth.getCurrentUser().getUid() )
-                .update( Constants.USER_DEVICE_TOKENS, FieldValue.arrayRemove( firebaseInstanceID ))
+        db.collection(Constants.FB_USERS)
+                .document(auth.getCurrentUser().getUid())
+                .update(Constants.USER_DEVICE_TOKENS, FieldValue.arrayRemove(firebaseInstanceID))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -233,10 +254,9 @@ public class MyProfileFragment extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             Log.i(TAG, "update success!");
-                        }
-                        else{
+                        } else {
                             Log.i(TAG, "update failed");
                         }
 
@@ -281,4 +301,6 @@ public class MyProfileFragment extends Fragment {
         });
 
     }
+
+
 }
