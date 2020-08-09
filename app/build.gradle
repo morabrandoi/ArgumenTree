@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage' // Storage
     implementation 'com.google.firebase:firebase-messaging' // cloud messaging
     implementation 'com.google.firebase:firebase-messaging-directboot' // directboot
+    implementation 'com.firebaseui:firebase-ui-auth:6.3.0' // sign in UI thing
 
 
     // Material Design Material View

@@ -37,6 +37,7 @@ import java.util.List;
 // TODO: figure out animations
 public class ComposeQuestionActivity extends AppCompatActivity {
     public static final String TAG = "ComposeQuestionActivity";
+    public static final int QUESTION_LIMIT = 150;
 
     // View member variables
     private EditText etQuestionBody;
@@ -98,6 +99,11 @@ public class ComposeQuestionActivity extends AppCompatActivity {
         btnSubmitQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!validateInputs()){
+                    return;
+                }
+
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 SharedPrefHelper.hasUserIn(ComposeQuestionActivity.this);
                 User user = SharedPrefHelper.getUser(ComposeQuestionActivity.this);
@@ -131,5 +137,20 @@ public class ComposeQuestionActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private boolean validateInputs() {
+        boolean questionIsFilled = !etQuestionBody.getText().toString().isEmpty();
+        boolean questionWithinLimit = etQuestionBody.getText().toString().length() <= QUESTION_LIMIT;
+
+        if (!questionIsFilled){
+            etQuestionBody.setError("There is nothing in the question box!");
+        }
+
+        if (!questionWithinLimit){
+            etQuestionBody.setError("This question is too long!");
+        }
+
+        return questionIsFilled && questionWithinLimit;
     }
 }

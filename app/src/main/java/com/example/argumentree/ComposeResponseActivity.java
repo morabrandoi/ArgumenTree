@@ -27,7 +27,6 @@ import org.parceler.Parcels;
 import java.util.Date;
 
 public class ComposeResponseActivity extends AppCompatActivity {
-
     public static final String TAG = "ComposeResponseActivity";
     public static final int BRIEF_LIMIT = 100;
 
@@ -41,7 +40,6 @@ public class ComposeResponseActivity extends AppCompatActivity {
     private String parentType; // Can either be "response" or "question"
     private String questionRef; // if parent is question then parentRef == questionRoot
     private String parentRef;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

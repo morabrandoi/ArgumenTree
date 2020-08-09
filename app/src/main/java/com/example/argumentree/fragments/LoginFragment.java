@@ -71,6 +71,7 @@ public class LoginFragment extends Fragment {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 final FirebaseAuth auth = FirebaseAuth.getInstance();
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();

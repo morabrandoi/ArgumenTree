@@ -30,7 +30,7 @@
         android:animateLayoutChanges="true"
         android:hint="Question"
         app:counterEnabled="true"
-        app:counterMaxLength="100"
+        app:counterMaxLength="150"
         app:errorEnabled="true"
         app:hintAnimationEnabled="true"
         app:hintEnabled="true"
@@ -96,10 +96,10 @@
 
         <ImageView
             android:id="@+id/ivAddChip"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+            app:srcCompat="@drawable/ic_plus_rounded" />
     </LinearLayout>
 
     <Switch
