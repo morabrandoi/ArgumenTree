@@ -38,6 +38,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-directboot' // directboot
     implementation 'com.firebaseui:firebase-ui-auth:6.3.0' // sign in UI thing
 
+    // facebook sign in
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+
+
 
     // Material Design Material View
     implementation 'com.google.android.material:material:1.1.0'

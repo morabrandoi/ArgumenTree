@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private static final List<AuthUI.IdpConfig> PROVIDERS = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
             new AuthUI.IdpConfig.PhoneBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build());
+            new AuthUI.IdpConfig.GoogleBuilder().build(),
+            new AuthUI.IdpConfig.FacebookBuilder().build());
 
     // UI variables
     private BottomNavigationView bottomNavigationView;
