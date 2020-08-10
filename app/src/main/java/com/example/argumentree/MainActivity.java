@@ -44,10 +44,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String PRIVACY_POLICY = "https://www.youtube.com/watch?v=9KZ-ptvWD6U";
     private static final int RC_SIGN_IN = 1822;
     private static final List<AuthUI.IdpConfig> PROVIDERS = Arrays.asList(
-            new AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
-            new AuthUI.IdpConfig.PhoneBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build(),
-            new AuthUI.IdpConfig.FacebookBuilder().build());
+            new AuthUI.IdpConfig.TwitterBuilder().build(),
+            new AuthUI.IdpConfig.FacebookBuilder().build(),
+            new AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build()
+    );
 
     // UI variables
     private BottomNavigationView bottomNavigationView;
@@ -141,24 +142,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "onActivityResult: resultCode: " + resultCode);
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
+            Log.i(TAG, "onActivityResult: responseObj " + response.toString());
             if (resultCode == RESULT_OK) {
 
-                if (response.isNewUser()){
+                if (response.getProviderType().equals("twitter.com")){
+                    handleTwitterAuth(response);
+                }
+                else if (response.isNewUser()){
 
-                    // checking to see if automatically added to FirebaseAuth
-                    if (FirebaseAuth.getInstance().getCurrentUser() == null){
-                        Log.i(TAG, "onActivityResult: USER SHOULD NOT BE NULL");
-                        Toast.makeText(this, "ERROR: getCurrentUser is null!", Toast.LENGTH_SHORT).show();
-                    }
-
+                    Log.i(TAG, "onActivityResult: New user created. About to add to firestore");
                     String providerType = response.getProviderType();
                     String email = response.getEmail();
                     String phoneNumber = response.getPhoneNumber();
-                    addUserToFirestore(providerType, email, phoneNumber);
+                    addUserToFirestore(response);
                 }
                 else{
                     getUserAndStoreInSharedPref();
@@ -175,6 +175,41 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void handleTwitterAuth(final IdpResponse response) {
+        // check if it already exists in the databse
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db.collection( Constants.FB_USERS )
+                .document( uid )
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot doc) {
+                        Log.i(TAG, "onSuccess: Successful check if user exists and it is: " + doc.exists());
+
+                        if (doc.exists()){
+                            User user = doc.toObject(User.class);
+                            SharedPrefHelper.putUserIn(MainActivity.this, user);
+                            putFCMTokenInFirestore();
+                        }
+                        else {
+                            String providerType = response.getProviderType();
+                            String email = response.getEmail();
+                            String phoneNumber = response.getPhoneNumber();
+                            addUserToFirestore(response);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: for twitter, check if user existed failed", e);
+                    }
+                });
+
+        // if it doesn't add it
     }
 
     // if user is not in sharedPref, pull user in and add to shared Pref
@@ -253,11 +288,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Takes in new user and adds them to firestore
-    private void addUserToFirestore(String providerType, String email, String phoneNumber) {
+    private void addUserToFirestore(IdpResponse response) {
         // Assigning fields of the user object
+        String providerType = response.getProviderType();
+        String email = response.getEmail();
+        String phoneNumber = response.getPhoneNumber();
         String authUserID = FirebaseAuth.getInstance().getUid();
         String bio = "Hanging in there!";
-        String profilePic = "https://placeimg.com/360/360/people";
+        String profilePic = "https://firebasestorage.googleapis.com/v0/b/argumentree.appspot.com/o/public%2Fdefault_profile.png?alt=media";
         String username = "changeMe!";
         int likes = 0;
 

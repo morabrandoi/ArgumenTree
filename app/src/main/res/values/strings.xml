@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">ArgumenTree</string>
-    <string name="facebook_app_id">1148548452197395</string>
     <string name="facebook_application_id" translatable="false">1148548452197395</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1148548452197395</string>
-    <string name="fb_login_protocol_scheme">fb1148548452197395</string>
 
 </resources>
