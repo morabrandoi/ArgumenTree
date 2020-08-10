@@ -60,6 +60,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
 
         @Override
         public void onBindViewHolder(@NonNull PostsAdapter.ViewHolder holder, int position) {
+            holder.clearData();
             Post post = loadedPosts.get(position);
             // Bind differently based on whether the post object is a question or a response
             if (post instanceof Response) {
@@ -137,7 +138,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                 iconLike = itemView.findViewById(R.id.iconLike);
                 iconDislike = itemView.findViewById(R.id.iconDislike);
 
-                clResponse.setVisibility(View.GONE);
+//                clResponse.setVisibility(View.GONE);
+//                questionUser = null;
+//                responseUser = null;
             }
 
             // Read in Vote state on load so each post can have proper liking
@@ -539,6 +542,18 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     });
 
                 }
+            }
+
+            public void clearData() {
+                clResponse.setVisibility(View.GONE);
+                tvResponseBrief.setText( null );
+                tvResponseClaim.setText( null);
+                tvResponseSource.setText( null);
+                tvResponseLikes.setText( null );
+                tvResponseDislikes.setText( null );
+                tvQuestionUsername.setText(null);
+                tvQuestionBody.setText(null);
+                tvQuestionDescendants.setText(null);
             }
         }
 }
