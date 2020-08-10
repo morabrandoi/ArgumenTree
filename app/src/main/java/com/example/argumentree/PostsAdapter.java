@@ -231,8 +231,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                     public void onClick(View view) {
                         Intent intent = new Intent(context, TreeActivity.class);
 
-                        Parcelable wrappedResponse = Parcels.wrap(question);
-                        intent.putExtra(Constants.QUESTION, wrappedResponse);
+                        Parcelable wrappedQuestion = Parcels.wrap(question);
+                        intent.putExtra(Constants.QUESTION, wrappedQuestion);
                         context.startActivity(intent);
                     }
                 });

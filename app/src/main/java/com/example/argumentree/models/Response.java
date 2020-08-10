@@ -18,6 +18,7 @@ public class Response extends Post{
     private int descendants;
     private int likes;
     private int dislikes;
+    private boolean relaxed;
     private String authorRef;
     private String parentRef;
     private String questionRef;
@@ -25,15 +26,17 @@ public class Response extends Post{
     private String claim;
     private String source;
     private String sourceQRef;
+
     private @ServerTimestamp Date createdAt;
 
     public Response(){
     }
 
-    public Response(int descendants, int likes, int dislikes, String authorRef, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
+    public Response(int descendants, int likes, int dislikes, boolean relaxed, String authorRef, String parentRef, String questionRef, String brief, String claim, String source, String sourceQRef, Date createdAt) {
         this.descendants = descendants;
         this.likes = likes;
         this.dislikes = dislikes;
+        this.relaxed = relaxed;
         this.authorRef = authorRef;
         this.parentRef = parentRef;
         this.questionRef = questionRef;
@@ -42,6 +45,7 @@ public class Response extends Post{
         this.source = source;
         this.sourceQRef = sourceQRef;
         this.createdAt = createdAt;
+
     }
 
     public String getAuthorRef() {
@@ -86,6 +90,14 @@ public class Response extends Post{
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public boolean isRelaxed() {
+        return relaxed;
+    }
+
+    public void setRelaxed(boolean relaxed) {
+        this.relaxed = relaxed;
     }
 
     public String getParentRef() {

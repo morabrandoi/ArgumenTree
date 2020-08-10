@@ -40,6 +40,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
     private String parentType; // Can either be "response" or "question"
     private String questionRef; // if parent is question then parentRef == questionRoot
     private String parentRef;
+    private boolean relaxed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +59,13 @@ public class ComposeResponseActivity extends AppCompatActivity {
             Question question = Parcels.unwrap(passedIn.getParcelableExtra(Constants.QUESTION));
             questionRef = question.getDocID();
             parentRef = question.getDocID();
+            relaxed = question.isRelaxed();
         }
         else if (parentType.equals(Constants.RESPONSE)){
             Response response = Parcels.unwrap(passedIn.getParcelableExtra(Constants.RESPONSE));
             questionRef = response.getQuestionRef();
             parentRef = response.getDocID();
+            relaxed = response.isRelaxed();
         }
         else{
             throw new RuntimeException("The question type passed in to ComposeResponseActivity is invalid");
@@ -91,6 +94,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
                 response.setDescendants( 0 );
                 response.setLikes( 0 );
                 response.setDislikes( 0 );
+                response.setRelaxed( relaxed );
                 response.setAuthorRef( user.getAuthUserID() );
                 response.setParentRef( parentRef );
                 response.setQuestionRef( questionRef );
@@ -132,7 +136,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
     private boolean validateInputs() {
         boolean briefIsFilled = !etBrief.getText().toString().isEmpty();
         boolean claimIsFilled = !etClaim.getText().toString().isEmpty();
-        boolean sourceIsFilled = !etSource.getText().toString().isEmpty();
+        boolean sourceIsSatisfied = relaxed || !etSource.getText().toString().isEmpty();
         boolean sourceIsSingleWord = !etSource.getText().toString().trim().contains(" ");
         boolean briefWithinSize = etBrief.getText().toString().length() <= BRIEF_LIMIT;
 
@@ -144,7 +148,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
             etClaim.setError("This box is empty!");
         }
 
-        if (!sourceIsFilled){
+        if (!sourceIsSatisfied){
             etSource.setError("This box is empty!");
         }
 
@@ -157,7 +161,7 @@ public class ComposeResponseActivity extends AppCompatActivity {
         }
 
         return (briefIsFilled && claimIsFilled &&
-                sourceIsFilled && sourceIsSingleWord &&
+                sourceIsSatisfied && sourceIsSingleWord &&
                 briefWithinSize);
     }
 }
