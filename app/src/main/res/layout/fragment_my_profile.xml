@@ -44,6 +44,7 @@
                     android:textAllCaps="false"
                     android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="@+id/tvProfilePageBio"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/tvProfilePageBio"
                     app:layout_constraintTop_toTopOf="@+id/btnLogOut" />
 

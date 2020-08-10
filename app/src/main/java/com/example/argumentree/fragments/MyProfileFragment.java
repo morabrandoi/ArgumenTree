@@ -61,7 +61,7 @@ import java.util.List;
 
 public class MyProfileFragment extends Fragment {
     public static final String TAG = "MyProfileFragment";
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
+    public static final int EDIT_REQUEST_CODE = 1234;
 
     //TODO: Debug And test Sign in and sign out
     // UI variables
@@ -72,7 +72,6 @@ public class MyProfileFragment extends Fragment {
     private TextView tvProfilePageBio;
     private ToggleButton togBtnLike;
     private TextView tvLikeCount;
-    private TextView tvHasContributedTo;
     private RecyclerView rvContributions;
 
     // Model variables
@@ -163,22 +162,33 @@ public class MyProfileFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Testing if clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), EditProfileActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_REQUEST_CODE);
 
             }
         });
 
         //
-        ivProfilePageProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Launch Camera action for result
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                // update local user
+                user = SharedPrefHelper.getUser(getContext());
+
+                tvProfilePageBio.setText(user.getBio());
+                tvProfilePageUsername.setText(user.getUsername());
+                String pfpURL = user.getProfilePic();
+                if (pfpURL != null){
+                    Glide.with(this).load(pfpURL).circleCrop().into(ivProfilePageProfilePic);
                 }
             }
-        });
+        }
     }
 
     private void finishSignOut() {
@@ -192,7 +202,6 @@ public class MyProfileFragment extends Fragment {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.SP_CURRENT_USER, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.remove(Constants.SP_CURRENT_USER);
-//        editor.putString(Constants.SP_CURRENT_USER, null);
 
         editor.apply();
     }
@@ -217,72 +226,6 @@ public class MyProfileFragment extends Fragment {
                         Log.e(TAG, "onFailure: firebaseInstanceID was not updated to user", e);
                     }
                 });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // If return was successful and okay
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            ivProfilePageProfilePic.setImageBitmap(bitmap);
-            uploadToFirestorage(bitmap);
-        }
-    }
-
-    private void uploadToFirestorage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final StorageReference reference = FirebaseStorage.getInstance().getReference().child("profileImages").child(uid + ".jpeg");
-
-        reference.putBytes(baos.toByteArray())
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Log.d(TAG, "onSuccess: " + uri);
-                                setFirestoreUserProfilePic(uri);
-                                updateSharedPrefUser(uri);
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "failure in storage upload: ", e.getCause());
-                    }
-                });
-    }
-
-    private void setFirestoreUserProfilePic(Uri uri) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        db.collection(Constants.FB_USERS)
-                .document(user.getUid())
-                .update(Constants.USER_PROFILE_PIC, uri.toString())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.i(TAG, "update success!");
-                        } else {
-                            Log.i(TAG, "update failed");
-                        }
-
-                    }
-                });
-    }
-
-    private void updateSharedPrefUser(Uri uri) {
-        user.setProfilePic(uri.toString());
-        SharedPrefHelper.putUserIn(getContext(), user);
     }
 
     private void fillContributionsFromFirestore() {

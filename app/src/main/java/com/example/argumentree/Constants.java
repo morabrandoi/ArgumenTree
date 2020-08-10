@@ -65,6 +65,9 @@ public class Constants {
     public static final String PARENT_TYPE = "parentType";
     public static final String ALL_RESPONSES = "allResponses";
 
+    // for fire storage
+    public static final String PROFILE_IMAGES = "profileImages";
+
 
     // Shared Preferences
     public static final String SP_CURRENT_USER = "argumentree.currentUser";
