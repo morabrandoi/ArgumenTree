@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(PROVIDERS)
+                        .enableAnonymousUsersAutoUpgrade()
                         .setTheme(R.style.AppTheme)
                         .setLogo(R.drawable.ic_logo_with_text)
                         .setTosAndPrivacyPolicyUrls(
@@ -146,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-            Log.i(TAG, "onActivityResult: responseObj " + response.toString());
+
             if (resultCode == RESULT_OK) {
+                Log.i(TAG, "onActivityResult: responseObj " + response.toString());
 
                 if (response.getProviderType().equals("twitter.com")){
                     handleTwitterAuth(response);
