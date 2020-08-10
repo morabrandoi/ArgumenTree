@@ -9,5 +9,5 @@
     <color name="NavBarItemTint">#FFFFFF</color>
     <color name="LighterArgumenTreeGreen">#E8F5E9</color>
     <color name="ArgumenTreeBrown">#A1887F</color>
-
+    <color name="cancelButton">#D2D2D2</color>
 </resources>

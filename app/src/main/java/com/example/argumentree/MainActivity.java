@@ -153,16 +153,12 @@ public class MainActivity extends AppCompatActivity {
                     handleTwitterAuth(response);
                 }
                 else if (response.isNewUser()){
-
                     Log.i(TAG, "onActivityResult: New user created. About to add to firestore");
-                    String providerType = response.getProviderType();
-                    String email = response.getEmail();
-                    String phoneNumber = response.getPhoneNumber();
+
                     addUserToFirestore(response);
                 }
                 else{
                     getUserAndStoreInSharedPref();
-
                 }
 
 
@@ -293,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
         String providerType = response.getProviderType();
         String email = response.getEmail();
         String phoneNumber = response.getPhoneNumber();
-        String authUserID = FirebaseAuth.getInstance().getUid();
+        String authUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String bio = "Hanging in there!";
         String profilePic = "https://firebasestorage.googleapis.com/v0/b/argumentree.appspot.com/o/public%2Fdefault_profile.png?alt=media";
         String username = "changeMe!";
@@ -319,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Storing user in shared prefs
                         SharedPrefHelper.putUserIn(MainActivity.this, user);
+                        putFCMTokenInFirestore();
 
                     }
                 })

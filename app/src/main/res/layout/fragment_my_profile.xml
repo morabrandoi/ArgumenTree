@@ -36,6 +36,17 @@
                     app:layout_constraintStart_toStartOf="@+id/ivProfilePageProfilePic"
                     app:layout_constraintTop_toBottomOf="@+id/ivProfilePageProfilePic" />
 
+                <Button
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Profile"
+                    android:textAllCaps="false"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="@+id/tvProfilePageBio"
+                    app:layout_constraintStart_toStartOf="@+id/tvProfilePageBio"
+                    app:layout_constraintTop_toTopOf="@+id/btnLogOut" />
+
                 <ImageView
                     android:id="@+id/ivProfilePageProfilePic"
                     android:layout_width="100dp"
@@ -66,10 +77,12 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:text="Bio information hereeeee"
+                    app:layout_constraintBottom_toTopOf="@+id/btnLogOut"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/ivProfilePageProfilePic"
                     app:layout_constraintTop_toBottomOf="@+id/tvProfilePageUsername"
+                    app:layout_constraintVertical_bias="0.0"
                     tools:text="Bio information hereeeee" />
 
                 <LinearLayout

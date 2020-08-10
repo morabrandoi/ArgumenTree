@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.argumentree.Constants;
+import com.example.argumentree.EditProfileActivity;
 import com.example.argumentree.PostsAdapter;
 import com.example.argumentree.R;
 import com.example.argumentree.SharedPrefHelper;
@@ -63,6 +66,7 @@ public class MyProfileFragment extends Fragment {
     //TODO: Debug And test Sign in and sign out
     // UI variables
     private Button btnLogOut;
+    private Button btnEditProfile;
     private ImageView ivProfilePageProfilePic;
     private TextView tvProfilePageUsername;
     private TextView tvProfilePageBio;
@@ -94,6 +98,7 @@ public class MyProfileFragment extends Fragment {
 
         // Getting references to view elements
         btnLogOut = view.findViewById(R.id.btnLogOut);
+        btnEditProfile = view.findViewById(R.id.btnEditProfile);
         ivProfilePageProfilePic = view.findViewById(R.id.ivProfilePageProfilePic);
         tvProfilePageUsername = view.findViewById(R.id.tvProfilePageUsername);
         tvProfilePageBio = view.findViewById(R.id.tvProfilePageBio);
@@ -148,6 +153,17 @@ public class MyProfileFragment extends Fragment {
                             }
                         });
 
+
+            }
+        });
+
+
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Testing if clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
+                startActivity(intent);
 
             }
         });
